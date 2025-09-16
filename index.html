@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SocietyHub-smar society Management</title>
+    <meta name="description" content="Modern Society system for residential communities.Manage residents,Announcements,Maintenance request,and more">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+     <header class="header">
+            <div class="header-content">
+                <div class="header-left">
+                    <button class="mobile-menu-btn" id="mobileMenuBtn">
+                        <i class="fas fa-bars"></i>
+                    </button>
+
+                    <div class="logo">
+                        <div class="logo-icon">
+                            <i class="fas fa-building"></i>
+                        </div>
+                        <h1 class="logo-text">SocietyHub</h1>
+                    </div>
+                </div>
+
+                <div class="header-right">
+                    <button class="notification-btn">
+                        <i class="fas fa-bell"></i>
+                    </button>
+                    <div class="user-avatar"></div>
+                </div>
+
+
+            </div>
+        </header>
+
+        <div class="main-container">
+            <!--sidebar-->
+            <aside class="sidebar" id="sidebar">
+                <nav class="nav-menu">
+                    <button class="nav-item active" data-page="dashboard">
+                        <i class="fas fa-building"></i>
+                        <span>Dashboard</span>
+                    </button>
+                    <button class="nav-item" data-page="residents">
+                        <i class="fas fa-users"></i>
+                        <span>Residents</span>
+                   </button>
+                   <button class="nav-item" data-page="announcements">
+                        <i class="fas fa-bullhorn"></i>
+                        <span>Announcements</span>
+                   </button>
+                   <button class="nav-item" data-page="settings">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>Settings</span>
+                   </button>
+                </nav>
+            </aside>
+
+           <!-- Main Content -->
+        <main class="main-content">
+            <!-- Dashboard Page -->
+            <div class="page active" id="dashboard">
+                <div class="page-header">
+                    <div class="page-title">
+                        <h1>Dashboard</h1>
+                        <p>Welcome back! Here's what's happening in your society.</p>
+                    </div>
+                    <button class="btn btn-primary">
+                        <i class="fas fa-exclamation-circle"></i>
+                        Quick Actions
+                    </button>
+                </div>     
+                <div class="stats grid">
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <span class="stat-title">Total Resident</span>
+                            <i class="fas fas-users stat-icon"></i>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-value">248</div>
+                            <div class="stat-change positive">
+                                <i class="fas fa-trending-up"></i>
+                                +12% from last month
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <span class="stat-title">Monthly Collection</span>
+                            <i class="fas fa-dollar-sign stat-icon"></i>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-value">₹4,85,000</div>
+                            <div class="stat-change positive">
+                                <i class="fas fa-trending-up"></i>
+                                +8% from last month
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <span class="stat-title">Pending Requests</span>
+                            <i class="fas fa-wrench stat-icon"></i>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-value">17</div>
+                            <div class="stat-change positive">
+                                <i class="fas fa-trending-up"></i>
+                                -23% from last month
+                            </div>
+                        </div>
+                            </head>
+                            <!-- sidebar overlay only at the end of main-container -->
+
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <span class="stat-title">Upcoming Events</span>
+                            <i class="fas fa-calendar stat-icon"></i>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-value">5</div>
+                            <div class="stat-change neutral">
+                                <i class="fas fa-trending-up"></i>
+                                +2 from last month
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <span class="stat-title">Upcoming Events</span>
+                            <i class="fas fa-calendar stat-icon"></i>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-value">5</div>
+                            <div class="stat-change neutral">
+                                <i class="fas fa-trending-up"></i>
+                                +2 from last month
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Upcoming Events -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>Upcoming Events</h3>
+                        </div>
+                        <div class="card-content">
+                            <div class="event-list">
+                                <div class="event-item">
+                                    <div class="event-info">
+                                        <p class="event-title">Society AGM</p>
+                                        <p class="event-time">6:00 PM</p>
+                                    </div>
+                                    <div class="event-date">15th Sep</div>
+                                </div>
+                                <div class="event-item">
+                                    <div class="event-info">
+                                        <p class="event-title">Maintenance Work - Elevator</p>
+                                        <p class="event-time">10:00 AM</p>
+                                    </div>
+                                    <div class="event-date">18th Sep</div>
+                                </div>
+                                <div class="event-item">
+                                    <div class="event-info">
+                                        <p class="event-title">Festive Celebration</p>
+                                        <p class="event-time">7:00 PM</p>
+                                    </div>
+                                    <div class="event-date">22nd Sep</div>
+                                </div>
+                            </div>
+                            <button class="btn btn-ghost full-width">View Calendar</button>
+                        </div>
+                    </div>
+                </div>
+                <!-- Quick Actions -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Quick Actions</h3>
+                    </div>
+                    <div class="card-content">
+                        <div class="quick-actions">
+                            <button class="quick-action-btn">
+                                <i class="fas fa-users"></i>
+                                <span>Add Resident</span>
+                            </button>
+                            <button class="quick-action-btn">
+                                <i class="fas fa-bell"></i>
+                                <span>New Notice</span>
+                            </button>
+                            <button class="quick-action-btn">
+                                <i class="fas fa-wrench"></i>
+                                <span>Maintenance</span>
+                            </button>
+                            <button class="quick-action-btn">
+                                <i class="fas fa-dollar-sign"></i>
+                                <span>Collect Fee</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Residents Page -->
+            <div class="page" id="residents">
+                <div class="page-header">
+                    <div class="page-title">
+                        <h1>Residents</h1>
+                        <p>Manage society members and their information.</p>
+                    </div>
+                    <button class="btn btn-primary">
+                        <i class="fas fa-plus"></i>
+                        Add New Resident
+                    </button>
+                </div>
+
+                <!-- Search and Filters -->
+                <div class="card">
+                    <div class="card-content">
+                        <div class="search-filters">
+                            <div class="search-box">
+                                <i class="fas fa-search"></i>
+                                <input type="text" placeholder="Search residents..." id="residentSearch">
+                            </div>
+                            <button class="btn btn-outline">Filter by Tower</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Residents Grid -->
+                <div class="residents-grid" id="residentsGrid">
+                    <!-- Residents will be populated by JavaScript -->
+                </div>
+
+                <!-- Summary Stats -->
+                <div class="summary-stats">
+                    <div class="summary-card">
+                        <div class="summary-value">248</div>
+                        <div class="summary-label">Total Residents</div>
+                    </div>
+                    <div class="summary-card active">
+                        <div class="summary-value">235</div>
+                        <div class="summary-label">Active Members</div>
+                    </div>
+                    <div class="summary-card pending">
+                        <div class="summary-value">13</div>
+                        <div class="summary-label">Pending Approvals</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Announcements Page -->
+            <div class="page" id="announcements">
+                <div class="page-header">
+                    <div class="page-title">
+                        <h1>Announcements</h1>
+                        <p>Stay updated with society news and important notices.</p>
+                    </div>
+                    <button class="btn btn-primary">
+                        <i class="fas fa-plus"></i>
+                        New Announcement
+                    </button>
+                </div>
+
+                <!-- Pinned Announcements -->
+                <div class="announcements-section">
+                    <div class="section-header">
+                        <i class="fas fa-thumbtack"></i>
+                        <h2>Pinned Announcements</h2>
+                    </div>
+                    <div class="announcements-list" id="pinnedAnnouncements">
+                        <!-- Pinned announcements will be populated by JavaScript -->
+                    </div>
+                </div>
+
+                <!-- Recent Announcements -->
+                <div class="announcements-section">
+                    <h2>Recent Announcements</h2>
+                    <div class="announcements-list" id="recentAnnouncements">
+                        <!-- Recent announcements will be populated by JavaScript -->
+                    </div>
+                </div>
+
+                <!-- Quick Stats -->
+                <div class="announcement-stats">
+                    <div class="announcement-stat">
+                        <div class="stat-value">12</div>
+                        <div class="stat-label">Total Notices</div>
+                    </div>
+                    <div class="announcement-stat">
+                        <div class="stat-value">3</div>
+                        <div class="stat-label">Pinned</div>
+                    </div>
+                    <div class="announcement-stat">
+                        <div class="stat-value">85%</div>
+                        <div class="stat-label">Read Rate</div>
+                    </div>
+                    <div class="announcement-stat">
+                        <div class="stat-value">24h</div>
+                        <div class="stat-label">Avg Response</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Settings Page -->
+            <div class="page" id="settings">
+                <div class="page-header">
+                    <div class="page-title">
+                        <h1>Settings</h1>
+                        <p>Configure your society management preferences.</p>
+                    </div>
+                </div>
+
+                <div class="settings-grid">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>Society Information</h3>
+                        </div>
+                        <div class="card-content">
+                            <p>Manage basic society details and configuration.</p>
+                            <button class="btn btn-outline">Edit Details</button>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>User Management</h3>
+                        </div>
+                        <div class="card-content">
+                            <p>Control user access and permissions.</p>
+                            <button class="btn btn-outline">Manage Users</button>
+                        </div>
+                    </div>
+                </div>
+            </div>                  
+            </main>
+        </div>
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>
