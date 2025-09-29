@@ -79,6 +79,9 @@ body{
     color: var(--foreground);
     line-height: 1.6;
 }
+a:link, a:visited{
+    color: inherit;
+}
 
 .header{
     position: sticky;

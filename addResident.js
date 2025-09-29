@@ -10,6 +10,7 @@
     const contactError = document.getElementById('contactError');
     const successMessage = document.getElementById('successMessage');
     const emailError = document.getElementById('emailError');
+  
 
     form.addEventListener('submit', (e) => {
       e.preventDefault();
@@ -17,7 +18,7 @@
       // Hide error and success messages
       nameError.style.display = 'none';
       flatError.style.display = 'none';
-  contactError.style.display = 'none';
+      contactError.style.display = 'none';
       successMessage.style.display = 'none';
 
       let isValid = true;
@@ -54,6 +55,29 @@
     } else {
     emailError.style.display = 'none';
     }
+     if (isValid) {
+    // Create resident object
+    const newResident = {
+      id: Date.now(), // unique ID
+      name: residentName.value.trim(),
+      flat: flatNumber.value.trim(),
+      phone: contactNumber.value.trim(),
+      email: emailID.value.trim(),
+      status: "Active",
+      joinDate: new Date().toLocaleString('default', { month: 'short', year: 'numeric' })
+    };
+
+    // Save to localStorage
+    let residents = JSON.parse(localStorage.getItem('residents')) || [];
+    residents.push(newResident);
+    localStorage.setItem('residents', JSON.stringify(residents));
+
+    // Show success
+    successMessage.style.display = 'block';
+
+    // Reset form
+    form.reset();
+  }
  });
 
 
