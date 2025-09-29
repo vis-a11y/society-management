@@ -384,3 +384,4 @@ window.societyManagement = {
     newAnnouncement,
     quickAction
 };
+    
