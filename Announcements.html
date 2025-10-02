@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="Announcements.css">
+   
+    
+<body>
+    <div class="container">
+    <h2>Announcement</h2>
+    <div id="successMessage" class="success-message">Announcement added successfully!</div>
+    <form id="addAnnouncementForm" novalidate>
+      <input type="text" id="Announcement" name="Announcement" placeholder="Announcement title" required />
+        <div id="nameError" class="error">Please enter a valid Announcement.</div>
+
+      <input type="text" id="MeetingDate" name="Date" placeholder="date" required/>
+        <div id="dateError" class="error">Please enter your Date.</div>
+
+      <input type="time" id="MeetingTime" name="time" required >
+      <select name="ampm" required>
+        <option value="">Am/PM</option>
+        <option value="AM"></option>
+        <option value="PM"></option>
+      </select>
+        <div id="timeError" class="error">Please enter a valid time.</div><br>
+
+      
+      <textarea name="description" id="description" placeholder="description" required></textarea>
+      <div id="descriptionError" class="error"> please enter a description</div><br>
+
+      <button type="submit">Add Announcement</button>
+    </form>
+  </div>
+    
+</body>
+</html>

@@ -96,6 +96,7 @@ a:link, a:visited{
 .header-content{
     display: flex;
     align-items: center;
+    flex-direction: row;
     justify-content: space-between;
     height: 100%;
     padding: 0 1rem;
@@ -104,7 +105,9 @@ a:link, a:visited{
 .header-left{
     display: flex;
     align-items: center;
-    gap: 1rem;
+    gap: 0.5rem;
+    justify-content: left;
+    justify-content: flex-start;
 }
 
 .mobile-menu-btn .i{
@@ -154,9 +157,14 @@ a:link, a:visited{
 .header-right{ 
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-
+    justify-content: flex-end;
+    justify-content: right;
+    gap:0.1rem;
+    display: flex;   
+    flex-direction: row;
+   
 }
+
 
 .notification-btn{
     background: none;
@@ -164,8 +172,10 @@ a:link, a:visited{
     padding: 0.5rem;
     border-radius: var(--border-radius);
     color: var(--foreground);
-    cursor: pointer;
-}
+    cursor: pointer; 
+    margin-left:60rem ;
+}   
+   
 
 .notification-btn:hover{
     background: var(--accent);
@@ -176,6 +186,20 @@ a:link, a:visited{
     height: 2rem;
     background: var(--gradient-primary);
     border-radius: 50%;
+}
+.Login-btn{
+
+    background: none;
+    border: none;
+    padding: 0.5rem;
+    border-radius: var(--border-radius);
+    color: var(--foreground);
+    cursor: pointer; 
+    
+
+}
+.Login-btn:hover{
+    background: var(--accent);
 }
 
 /* Layout */
