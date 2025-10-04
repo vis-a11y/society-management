@@ -96,7 +96,6 @@ a:link, a:visited{
 .header-content{
     display: flex;
     align-items: center;
-    flex-direction: row;
     justify-content: space-between;
     height: 100%;
     padding: 0 1rem;
@@ -157,11 +156,9 @@ a:link, a:visited{
 .header-right{ 
     display: flex;
     align-items: center;
-    justify-content: flex-end;
-    justify-content: right;
+    justify-content: center;
     gap:0.1rem;
-    display: flex;   
-    flex-direction: row;
+   
    
 }
 
@@ -173,7 +170,7 @@ a:link, a:visited{
     border-radius: var(--border-radius);
     color: var(--foreground);
     cursor: pointer; 
-    margin-left:60rem ;
+    
 }   
    
 
@@ -186,20 +183,6 @@ a:link, a:visited{
     height: 2rem;
     background: var(--gradient-primary);
     border-radius: 50%;
-}
-.Login-btn{
-
-    background: none;
-    border: none;
-    padding: 0.5rem;
-    border-radius: var(--border-radius);
-    color: var(--foreground);
-    cursor: pointer; 
-    
-
-}
-.Login-btn:hover{
-    background: var(--accent);
 }
 
 /* Layout */
