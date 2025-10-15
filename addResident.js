@@ -77,6 +77,10 @@
 
     // Reset form
     form.reset();
+
+    setTimeout(() => {
+      window.location.href ='index.html'
+    },1500);
   }
  });
 

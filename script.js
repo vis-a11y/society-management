@@ -150,16 +150,28 @@ function closeMobileMenu() {
 }
 
 // Residents functionality
-function renderResidents(filteredResidents = residentsData) {
+function renderResidents(filteredResidents) {
     if (!residentsGrid) return;
-    
+
+    const allResidents = getResidents(); // get latest residents from localStorage
+    const finalResidents = filteredResidents || allResidents;
+
     residentsGrid.innerHTML = '';
-    
-    filteredResidents.forEach(resident => {
-        const residentCard = createResidentCard(resident);
-        residentsGrid.appendChild(residentCard);
+
+    finalResidents.forEach(resident => {
+        const card = createResidentCard(resident);
+        residentsGrid.appendChild(card);
     });
 }
+
+function viewResidentDetails(residentId) {
+    const residents = getResidents(); // always get latest
+    const resident = residents.find(r => r.id === residentId);
+    if (resident) {
+        alert(`Viewing details for ${resident.name}\nFlat: ${resident.flat}\nPhone: ${resident.phone}\nEmail: ${resident.email}\nStatus: ${resident.status}`);
+    }
+}
+
 
 function createResidentCard(resident) {
     const card = document.createElement('div');
@@ -206,18 +218,18 @@ function viewResidentDetails(residentId) {
 
 // Search functionality
 function initializeSearch() {
-    if (residentSearch) {
-        residentSearch.addEventListener('input', (e) => {
-            const searchTerm = e.target.value.toLowerCase();
-            const filteredResidents = residentsData.filter(resident =>
-                resident.name.toLowerCase().includes(searchTerm) ||
-                resident.flat.toLowerCase().includes(searchTerm) ||
-                resident.email.toLowerCase().includes(searchTerm)
-            );
-            renderResidents(filteredResidents);
-        });
-    }
+    if (!residentSearch) return;
+    residentSearch.addEventListener('input', e => {
+        const term = e.target.value.toLowerCase();
+        const filtered = getResidents().filter(r =>
+            r.name.toLowerCase().includes(term) ||
+            r.flat.toLowerCase().includes(term) ||
+            r.email.toLowerCase().includes(term)
+        );
+        renderResidents(filtered);
+    });
 }
+
 
 // Announcements functionality
 function renderAnnouncements() {
@@ -365,6 +377,11 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 // Add loading states for better perceived performance
 function showLoading(element) {
     element.innerHTML = '<div style="text-align: center; padding: 2rem; color: var(--muted-foreground);"><i class="fas fa-spinner fa-spin"></i> Loading...</div>';
+}
+// Load residents from localStorage or fallback to default
+function getResidents() {
+    const stored = JSON.parse(localStorage.getItem("residentsData"));
+    return stored && stored.length ? stored : residentsData; // residentsData = default array
 }
 
 // Export functions for global access
