@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Collect Fee - Society Management</title>
+    <link rel="stylesheet" href="collectfee.css">
+    <script defer src="collectfee.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+</head>
+<body>
+    <header>
+        <h1>Collect Fee</h1>
+        <a href="index.html">Back to Dashboard</a>
+    </header>
+<div class="page" id="collectFeePage">
+    <div class="page-header">
+        <div class="page-title">
+            <h1>Collect Fee</h1>
+            <p>Manage monthly fees for residents</p>
+        </div>
+    </div>
+
+    <div class="content-grid">
+        <!-- Fee Collection Form -->
+        <div class="card">
+            <div class="card-header">
+                <h3>Collect New Fee</h3>
+            </div>
+            <div class="card-content">
+                <form id="feeForm" class="full-width">
+                    <div class="form-group">
+                        <label for="residentSelect">Resident</label>
+                        <select id="residentSelect" class="full-width" required>
+                            <option value="">Select Resident</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="feeMonth">Month</label>
+                        <input type="month" id="feeMonth" class="full-width" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="feeAmount">Amount (₹)</label>
+                        <input type="number" id="feeAmount" placeholder="Enter amount" class="full-width" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="feeStatus">Status</label>
+                        <select id="feeStatus" class="full-width" required>
+                            <option value="Paid">Paid</option>
+                            <option value="Pending">Pending</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary full-width">Collect Fee</button>
+                </form>
+                <p id="successMessage" class="success-message">Fee collected successfully!</p>
+            </div>
+        </div>
+
+        <!-- Collected Fees Table -->
+        <div class="card">
+            <div class="card-header">
+                <h3>Collected Fees</h3>
+            </div>
+            <div class="card-content">
+                <table id="feeTable" class="full-width">
+                    <thead>
+                        <tr>
+                            <th>Resident</th>
+                            <th>Month</th>
+                            <th>Amount (₹)</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Fees will be rendered here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+   
+</body>
+</html>

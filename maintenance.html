@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maintenance - Society Management</title>
+    <link rel="stylesheet" href="maintenance.css">
+    <script defer src="maintenance.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+</head>
+<body>
+    <header>
+        <h1>Maintenance Charges</h1>
+        <a href="index.html">Back to Dashboard</a>
+    </header>
+
+    <div class="page" id="maintenancePage">
+        <div class="page-header">
+            <div class="page-title">
+                <h1>Maintenance</h1>
+                <p>Manage monthly maintenance charges for residents</p>
+            </div>
+        </div>
+
+        <div class="content-grid">
+            <!-- Maintenance Form -->
+            <div class="card">
+                <div class="card-header">
+                    <h3>Add Maintenance</h3>
+                </div>
+                <div class="card-content">
+                    <form id="maintenanceForm" class="full-width">
+                        <div class="form-group">
+                            <label for="residentSelect">Resident</label>
+                            <select id="residentSelect" class="full-width" required>
+                                <option value="">Select Resident</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="maintenanceMonth">Month</label>
+                            <input type="month" id="maintenanceMonth" class="full-width" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="maintenanceAmount">Amount (₹)</label>
+                            <input type="number" id="maintenanceAmount" placeholder="Enter amount" class="full-width" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="maintenanceStatus">Status</label>
+                            <select id="maintenanceStatus" class="full-width" required>
+                                <option value="Paid">Paid</option>
+                                <option value="Pending">Pending</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                                <label for="maintenanceRemark">Description Remark</label>
+                                <input type="text" id="maintenanceRemark" placeholder="Enter maintenance details" class="full-width" required>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary full-width">Add Maintenance</button>
+                    </form>
+                    <p id="successMessage" class="success-message">Maintenance added successfully!</p>
+                </div>
+            </div>
+
+            <!-- Maintenance Table -->
+            <div class="card">
+                <div class="card-header">
+                    <h3>Maintenance Records</h3>
+                </div>
+                <div class="card-content">
+                    <table id="maintenanceTable" class="full-width">
+                        <thead>
+                            <tr>
+                                <th>Resident</th>
+                                <th>Month</th>
+                                <th>Amount (₹)</th>
+                                <th>remark</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Maintenance records will be added here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
