@@ -2,6 +2,7 @@
     --background: hsl(210, 20%, 98%);
     --foreground: hsl(210, 11%, 15%);
     --card: hsl(0, 0%, 100%);
+    --card-foreground: hsl(210, 11%, 15%);
     --primary: hsl(195, 95%, 45%);
     --primary-foreground: hsl(0, 0%, 98%);
     --accent: hsl(195, 20%, 92%);
@@ -13,7 +14,7 @@
 
 body {
     font-family: system-ui, sans-serif;
-    background-color: var(--background);
+    background-color:var(--background);
     color: var(--foreground);
     margin: 0;
     padding: 0;
