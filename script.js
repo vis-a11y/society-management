@@ -38,17 +38,9 @@ const residentsData = [
         status: "Active",
         joinDate: "Nov 2022",
     },
+   
     {
         id: 5,
-        name: "Mohammed Ali",
-        flat: "B-201",
-        phone: "+91 55555 55555",
-        email: "mohammed.ali@email.com",
-        status: "Active",
-        joinDate: "Jul 2023",
-    },
-    {
-        id: 6,
         name: "Sneha Reddy",
         flat: "C-408",
         phone: "+91 44444 44444",
