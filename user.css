@@ -1,0 +1,51 @@
+/* User Management Page Specific */
+#usersTable {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+}
+
+#usersTable th, #usersTable td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+}
+
+#usersTable th {
+    background: var(--society-secondary);
+    color: var(--primary-foreground);
+    font-weight: 600;
+}
+
+#usersTable td {
+    background: var(--card);
+    color: var(--foreground);
+}
+
+#usersTable td .btn-action {
+    margin-right: 5px;
+    padding: 5px 8px;
+    font-size: 0.8rem;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    color: white;
+}
+
+#usersTable td .edit-btn {
+    background-color: var(--society-secondary);
+}
+
+#usersTable td .delete-btn {
+    background-color: hsl(0, 84%, 60%);
+}
+
+#usersTable td .toggle-status-btn {
+    background-color: var(--society-primary);
+}
+
+#addUserBtn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}

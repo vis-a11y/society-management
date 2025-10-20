@@ -1,78 +1,105 @@
 
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f4f6f8;
-      margin: 0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-    }
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f6f8;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
 
+.container {
+    background: #fff;
+    padding: 30px 40px;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    width: 400px;
+    max-width: 90%;
+}
+
+h2 {
+    color: #2b90f5;
+    text-align: center;
+    margin-bottom: 25px;
+    font-size: 24px;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+input[type="text"],
+input[type="tel"],
+input[type="email"] {
+    padding: 12px 15px;
+    margin-bottom: 15px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+    transition: all 0.3s ease;
+}
+
+input[type="text"]:focus,
+input[type="tel"]:focus,
+input[type="email"]:focus {
+    border-color: #2b90f5;
+    box-shadow: 0 0 5px rgba(43, 144, 245, 0.3);
+    outline: none;
+}
+
+button {
+    background-color: #2b90f5;
+    color: #fff;
+    padding: 12px;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+button:hover {
+    background-color: #1961d8;
+    transform: translateY(-2px);
+}
+
+.error {
+    color: #d93025;
+    font-size: 14px;
+    margin-top: -10px;
+    margin-bottom: 10px;
+    display: none;
+}
+
+.success-message {
+    text-align: center;
+    color: #28a745;
+    font-size: 16px;
+    margin-bottom: 15px;
+    display: none;
+}
+
+@media (max-width: 500px) {
     .container {
-      background: white;
-      padding: 30px 40px;
-      border-radius: 8px;
-      box-shadow: 0 2px 12px rgba(0,0,0,0.1);
-      width: 400px;
+        padding: 20px;
     }
 
     h2 {
-      color: #2b90f5;
-      text-align: center;
-      margin-bottom: 20px;
-    }
-
-    form {
-      display: flex;
-      flex-direction: column;
+        font-size: 20px;
     }
 
     input[type="text"],
-    input[type="tel"] {
-      padding: 10px;
-      margin-bottom: 15px;
-      border-radius: 5px;
-      border: 1px solid #ccc;
-      font-size: 16px;
-    }
-
-    input[type="text"]:focus,
-    input[type="tel"]:focus {
-      border-color: #2b90f5;
-      outline: none;
+    input[type="tel"],
+    input[type="email"] {
+        font-size: 14px;
+        padding: 10px;
     }
 
     button {
-      background-color: #2b90f5;
-      color: white;
-      padding: 12px;
-      border: none;
-      border-radius: 5px;
-      font-size: 16px;
-      cursor: pointer;
-      font-weight: 600;
-      transition: background-color 0.3s ease;
+        font-size: 14px;
+        padding: 10px;
     }
-
-    button:hover {
-      background-color: #1961d8;
-    }
-
-    .error {
-      color: #d93025;
-      font-size: 14px;
-      margin-top: -12px;
-      margin-bottom: 10px;
-      display: none;
-    }
-
-    .success-message {
-      text-align: center;
-      color: #28a745;
-      font-size: 16px;
-      margin-bottom: 15px;
-      display: none;
-    }
-
-  
+}

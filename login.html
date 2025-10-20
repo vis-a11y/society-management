@@ -1,22 +1,60 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="login.css">
-  <title>Society Management Login</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Society Management System</title>
+    <link rel="stylesheet" href="login.css">
 </head>
 <body>
-  <div class="login container">
-    <h2>Login</h2>
-    <form id="loginForm">
-      <input type="text" placeholder="Username" required><br>
-      <input type="password" placeholder="Password" required><br>
-      <input type="submit" value="Login">
-    </form>
-  </div>
+    <div class="login-container">
+        <h2>Society Management System</h2>
 
-  <!-- Move JS here so it can access DOM elements -->
-  <script src="login.js"></script>
+        <div id="errorMessage" class="error-message">Invalid login credentials!</div>
+
+        <form id="loginForm" novalidate>
+            <input type="text" id="loginID" placeholder="Login ID" required>
+            <input type="password" id="password" placeholder="Password" required>
+            
+            <button type="submit" class="btn">Login</button>
+        </form>
+
+        <div class="options">
+            <a href="#" id="forgotPassword">Forgot Password?</a> | 
+            <a href="#" id="registerUser">Register</a>
+        </div>
+    </div>
+
+    <!-- Forgot Password Modal -->
+    <div id="forgotModal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h3>Forgot Password</h3>
+            <input type="text" id="forgotID" placeholder="Enter Login ID" required>
+            <button id="resetBtn" class="btn">Reset Password</button>
+            <p id="resetMessage" class="success-message"></p>
+        </div>
+    </div>
+
+    <!-- Register Modal -->
+    <div id="registerModal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close" id="registerClose">&times;</span>
+            <h3>Register User</h3>
+            <input type="text" id="regID" placeholder="Login ID" required>
+            <input type="password" id="regPassword" placeholder="Password" required>
+            <select id="role">
+                <option value="User">User</option>
+                <option value="Admin">Admin</option>
+            </select>
+            <button id="registerBtn" class="btn">Register</button>
+            <p id="registerMessage" class="success-message"></p>
+        </div>
+    </div>
+
+    <script src="login.js"></script>
 </body>
 </html>
+
+
+

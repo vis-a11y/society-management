@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SocietyHub Admin Dashboard</title>
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+<body>
+
+<header class="header">
+    <div class="header-content">
+        <div class="header-left">
+            <div class="logo">
+                <div class="logo-icon"><i class="fas fa-building"></i></div>
+                <h1 class="logo-text">SocietyHub</h1>
+            </div>
+        </div>
+        <div class="header-right">
+            <button class="notification-btn"><i class="fas fa-bell"></i></button>
+            <div class="user-avatar" title="Admin"></div>
+        </div>
+    </div>
+</header>
+
+<div class="main-container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <nav class="nav-menu">
+            <button class="nav-item active" data-page="dashboard">
+                <i class="fas fa-tachometer-alt"></i>
+                <span>Dashboard</span>
+            </button>
+            <button class="nav-item" data-page="members">
+                <i class="fas fa-users"></i>
+                <span>Members</span>
+            </button>
+            <button class="nav-item" data-page="complaints">
+                <i class="fas fa-exclamation-triangle"></i>
+                <span>Complaints</span>
+            </button>
+            <button class="nav-item" data-page="finance">
+                <i class="fas fa-dollar-sign"></i>
+                <span>Finance</span>
+            </button>
+            <button class="nav-item" data-page="announcements">
+                <i class="fas fa-bullhorn"></i>
+                <span>Announcements</span>
+            </button>
+            <button class="nav-item" id="logoutBtn">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Logout</span>
+            </button>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Dashboard -->
+        <div class="page active" id="dashboard">
+            <div class="page-header">
+                <h1>Dashboard</h1>
+                <p>Overview of society activities</p>
+            </div>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <span class="stat-title">Total Members</span>
+                    <div class="stat-value" id="totalMembers">0</div>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-title">Pending Complaints</span>
+                    <div class="stat-value" id="pendingComplaints">0</div>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-title">Total Collection Fee</span>
+                    <div class="stat-value" id="totalCollection">₹0</div>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-title">Maintenance Fee Pending</span>
+                    <div class="stat-value" id="maintenanceFee">₹0</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Members Page -->
+        <div class="page" id="members">
+            <div class="page-header">
+                <h1>Members</h1>
+                <p>All registered society members</p>
+            </div>
+            <div class="residents-grid" id="membersGrid">
+                <!-- Members populated by JS -->
+            </div>
+        </div>
+
+        <!-- Complaints Page -->
+        <div class="page" id="complaints">
+            <div class="page-header">
+                <h1>Complaints</h1>
+                <p>Manage complaints from members</p>
+            </div>
+            <div class="residents-grid" id="complaintsGrid">
+                <!-- Complaints populated by JS -->
+            </div>
+        </div>
+
+        <!-- Finance Page -->
+        <div class="page" id="finance">
+            <div class="page-header">
+                <h1>Finance</h1>
+                <p>Track collection and maintenance fees</p>
+            </div>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <span class="stat-title">Total Collection</span>
+                    <div class="stat-value" id="financeTotalCollection">₹0</div>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-title">Pending Maintenance Fee</span>
+                    <div class="stat-value" id="financePending">₹0</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Announcements Page -->
+        <div class="page" id="announcements">
+            <div class="page-header">
+                <h1>Announcements</h1>
+                <p>Recent and pinned notices</p>
+            </div>
+            <div class="announcements-list" id="announcementsList">
+                <!-- Announcements populated by JS -->
+            </div>
+        </div>
+    </main>
+</div>
+
+<script src="admin.js"></script>
+</body>
+</html>
+

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Society Information - SocietyHub</title>
+    <link rel="stylesheet" href="information.css">
+</head>
+<body>
+    <div class="container">
+        <h2>Society Information</h2>
+        <div id="successMessage" class="success-message">Details updated successfully!</div>
+
+        <!-- View Mode -->
+        <div id="viewMode">
+            <p><strong>Name:</strong> <span id="displayName">Sunshine Apartments</span></p>
+            <p><strong>Address:</strong> <span id="displayAddress">123 Main Street, Mumbai</span></p>
+            <p><strong>Number of Flats:</strong> <span id="displayFlats">50</span></p>
+            <p><strong>Manager:</strong> <span id="displayManager">Rajesh Kumar</span></p>
+            <button id="editBtn" class="btn">Edit Details</button>
+        </div>
+
+        <!-- Edit Mode -->
+        <form id="editMode" class="hidden" novalidate>
+            <label for="societyName">Society Name</label>
+            <input type="text" id="societyName" name="societyName" required />
+            <div id="nameError" class="error">Please enter a valid society name.</div>
+
+            <label for="societyAddress">Address</label>
+            <input type="text" id="societyAddress" name="societyAddress" required />
+            <div id="addressError" class="error">Please enter the address.</div>
+
+            <label for="numFlats">Number of Flats</label>
+            <input type="number" id="numFlats" name="numFlats" required min="1" />
+            <div id="flatsError" class="error">Please enter a valid number of flats.</div>
+
+            <label for="societyManager">Society Manager</label>
+            <input type="text" id="societyManager" name="societyManager" required />
+            <div id="managerError" class="error">Please enter manager's name.</div>
+
+            <button type="submit" class="btn">Save Details</button>
+            <button type="button" id="cancelBtn" class="btn btn-outline">Cancel</button>
+        </form>
+    </div>
+
+    <script src="information.js"></script>
+</body>
+</html>
+

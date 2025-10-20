@@ -12,9 +12,10 @@
     --shadow-glow: 0 0 15px rgba(0, 160, 230, 0.3);
 }
 
+/* Body & Typography */
 body {
     font-family: system-ui, sans-serif;
-    background-color:var(--background);
+    background-color: var(--background);
     color: var(--foreground);
     margin: 0;
     padding: 0;
@@ -115,6 +116,22 @@ form input:focus, form select:focus {
     width: 100%;
 }
 
+/* Back to Dashboard Button */
+header a {
+    display: inline-block;
+    background-color: #28a745;
+    color: white;
+    padding: 8px 16px;
+    border-radius: var(--border-radius);
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+header a:hover {
+    background-color: #218838;
+}
+
 /* Success Message */
 .success-message {
     margin-top: 0.5rem;
@@ -160,10 +177,38 @@ table th {
     color: var(--foreground);
 }
 
+/* Edit & Delete Buttons */
+.action-btn {
+    padding: 5px 10px;
+    border-radius: var(--border-radius);
+    border: none;
+    cursor: pointer;
+    font-size: 0.85rem;
+    margin-right: 5px;
+    transition: all 0.2s ease;
+}
+
+.edit-btn {
+    background-color: #ffc107;
+    color: white;
+}
+
+.edit-btn:hover {
+    background-color: #e0a800;
+}
+
+.delete-btn {
+    background-color: #dc3545;
+    color: white;
+}
+
+.delete-btn:hover {
+    background-color: #c82333;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
     .content-grid {
         grid-template-columns: 1fr;
     }
 }
-
