@@ -41,7 +41,7 @@ loginForm.addEventListener("submit", (e) => {
         if(user.role === "Admin") {
             window.location.href = "adminDashboard.html";
         } else {
-            window.location.href = "userDashboard.html";
+            window.location.href = "index2.html";
         }
     } else {
         errorMessage.style.display = "block";
