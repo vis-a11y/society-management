@@ -1,10 +1,12 @@
 {
   "name": "society-management",
   "version": "1.0.0",
-  "description": "SocietyHub is a premium, responsive web application designed to streamline the management of residential communities. It offers a centralized platform for administrators to manage residents, finances, and announcements, while providing residents with a modern interface to stay informed and interact with society services.",
-  "main": "addResident.js",
+  "description": "SocietyHub is a premium, responsive web application designed to streamline the management of residential communities.",
+  "main": "backend/server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node backend/server.js",
+    "install-all": "cd backend && npm install"
   },
   "keywords": [],
   "author": "",

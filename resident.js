@@ -3,7 +3,7 @@
 // Consolidates all resident functionality into one file
 // ============================================================================
 
-const API_BASE = "http://localhost:5000/api";
+const API_BASE = window.location.origin + "/api";
 
 // ============================================================================
 // GLOBAL STATE
@@ -90,6 +90,12 @@ navItems.forEach(item => {
             navItems.forEach(nav => nav.classList.remove("active"));
             item.classList.add("active");
             pages.forEach(page => page.id === pageId ? page.classList.add("active") : page.classList.remove("active"));
+            
+            // Close mobile menu
+            if (sidebar && sidebar.classList.contains("active")) {
+                sidebar.classList.remove("active");
+                if (sidebarOverlay) sidebarOverlay.classList.remove("active");
+            }
         }
     });
 });

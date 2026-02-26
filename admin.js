@@ -3,7 +3,7 @@
 // Consolidates all admin functionality into one file
 // ============================================================================
 
-const API_BASE = "http://localhost:5000/api";
+const API_BASE = window.location.origin + "/api";
 
 // ============================================================================
 // GLOBAL STATE
@@ -88,9 +88,37 @@ navItems.forEach(item => {
             navItems.forEach(nav => nav.classList.remove("active"));
             item.classList.add("active");
             pages.forEach(page => page.id === pageId ? page.classList.add("active") : page.classList.remove("active"));
+            
+            // Close mobile menu
+            const sidebar = document.getElementById("sidebar");
+            const overlay = document.getElementById("sidebarOverlay");
+            if (sidebar && sidebar.classList.contains("active")) {
+                sidebar.classList.remove("active");
+                if (overlay) overlay.classList.remove("active");
+            }
         }
     });
 });
+
+// Mobile Menu Toggle
+const mobileMenuBtn = document.getElementById("mobileMenuBtn");
+if (mobileMenuBtn) {
+    mobileMenuBtn.addEventListener("click", () => {
+        const sidebar = document.getElementById("sidebar");
+        const overlay = document.getElementById("sidebarOverlay");
+        if (sidebar) sidebar.classList.toggle("active");
+        if (overlay) overlay.classList.toggle("active");
+    });
+}
+
+const sidebarOverlay = document.getElementById("sidebarOverlay");
+if (sidebarOverlay) {
+    sidebarOverlay.addEventListener("click", () => {
+        const sidebar = document.getElementById("sidebar");
+        sidebar.classList.remove("active");
+        sidebarOverlay.classList.remove("active");
+    });
+}
 
 // Logout
 const logoutBtn = document.getElementById("logoutBtn");

@@ -80,4 +80,33 @@ npm start
 *   `/chatbot.js`: Autonomous AI dialogue engine.
 
 ---
+
+## 🚀 **Deployment Guide**
+
+### **1. Cloud Deployment (Render / Heroku / Railway)**
+SocietyHub is ready for "One-Click" deployment. 
+1.  **Connect GitHub**: Push your code to a private or public repository.
+2.  **Settings**:
+    *   **Build Command**: `cd backend && npm install && cd ..`
+    *   **Start Command**: `npm start` (Runs `node backend/server.js`)
+3.  **Environment Variables**: 
+    Add `JWT_SECRET` and `PORT=5000` (or the platform default) in the platform's dashboard.
+
+### **2. Manual Deployment (Linux/VPS)**
+If you are hosting on a dedicated server:
+1.  Install **Node.js** and **PM2** (`npm install -g pm2`).
+2.  Clone the repository and run:
+    ```bash
+    npm install-all
+    pm2 start backend/server.js --name "SocietyHub"
+    ```
+3.  Configure **Nginx** as a reverse proxy for port `5000`.
+
+### **3. Mobile Use (Local Network)**
+To test on your phone:
+1.  Connect your PC and Phone to the same Wi-Fi.
+2.  Run `npm start` on your PC.
+3.  Open `http://[YOUR_PC_IP]:5000` on your phone browser.
+
+---
 *Developed for excellence in urban community living.*

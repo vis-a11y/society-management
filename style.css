@@ -1040,9 +1040,91 @@ tr:hover td {
     transform: scaleX(1.1);
 }
 
+/* --- Comprehensive Portal Responsiveness --- */
 @media (max-width: 1024px) {
-    .grid-2, .grid-3 {
-        grid-template-columns: 1fr;
+    :root { 
+        --sidebar-width: 80px;
+    }
+    
+    .sidebar span { display: none; }
+    .sidebar .nav-item { justify-content: center; padding: 1rem; }
+    .sidebar .nav-item i { margin: 0; font-size: 1.5rem; }
+    
+    .main-content {
+        margin-left: var(--sidebar-width);
+        max-width: calc(100% - var(--sidebar-width));
+        padding: var(--spacing-lg);
+    }
+}
+
+@media (max-width: 768px) {
+    :root {
+        --header-height: 60px;
+        --sidebar-width: 280px;
+    }
+
+    .mobile-menu-btn { display: flex !important; }
+
+    .sidebar {
+        left: calc(-1 * var(--sidebar-width));
+        top: 0;
+        height: 100vh;
+        z-index: 1001;
+        box-shadow: 20px 0 50px rgba(0,0,0,0.2);
+    }
+
+    .sidebar.active { left: 0; }
+
+    .main-content {
+        margin-left: 0;
+        max-width: 100%;
+        padding: var(--spacing-md);
+        padding-top: var(--spacing-lg);
+    }
+
+    .header-content { padding: 0 var(--spacing-md); }
+    .logo-text { font-size: 1.2rem; }
+    
+    /* Header Right on Mobile */
+    .header-right { gap: 0.5rem; }
+    .notification-btn, #sosBtn span { display: none; }
+    #sosBtn { padding: 0.5rem; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; }
+    #sosBtn i { margin: 0; }
+
+    /* Grid Stacking */
+    .grid-2, .grid-3, .residents-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    /* Cards */
+    .stat-card { padding: var(--spacing-md); }
+    
+    /* Tables Responsive */
+    .card-content { overflow-x: auto; }
+    table { min-width: 600px; }
+
+    /* Overlay */
+    .sidebar-overlay.active {
+        display: block;
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.4);
+        backdrop-filter: blur(4px);
+        z-index: 1000;
+        animation: fadeIn 0.3s ease;
+    }
+}
+
+@media (max-width: 480px) {
+    .page-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+    .page-header .btn { width: 100%; }
+    
+    .quick-actions {
+        grid-template-columns: repeat(2, 1fr);
     }
 }
 

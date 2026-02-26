@@ -1,5 +1,5 @@
 // Backend Config
-const API_BASE = "http://localhost:5000/api";
+const API_BASE = window.location.origin + "/api";
 
 const loginForm = document.getElementById("loginForm");
 const loginID = document.getElementById("loginID");
