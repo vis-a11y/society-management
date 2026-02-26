@@ -1,5 +1,7 @@
 // Backend Config
-const API_BASE = window.location.origin + "/api";
+const API_BASE = (window.location.origin.includes('localhost') && !window.location.origin.includes(':5000')) 
+    ? "http://localhost:5000/api" 
+    : window.location.origin + "/api";
 
 const loginForm = document.getElementById("loginForm");
 const loginID = document.getElementById("loginID");
@@ -12,6 +14,7 @@ const openPortalBtn = document.getElementById('openPortalBtn');
 const openAdminBtn = document.getElementById('openAdminBtn');
 const openPortalBtnHero = document.getElementById('openPortalBtnHero');
 const loginModal = document.getElementById('loginModal');
+const portalSubtitle = document.querySelector('.login-container .subtitle');
 const closePortal = document.getElementById('closePortal');
 const forgotClose = document.getElementById('forgotClose');
 const regClose = document.getElementById('regClose');
@@ -44,15 +47,19 @@ if (header) {
 }
 
 // Modal Toggles
-const toggleModal = (modal, show) => {
+const toggleModal = (modal, show, subtitleText) => {
     if (!modal) return;
-    if (show) modal.classList.remove('hidden');
-    else modal.classList.add('hidden');
+    if (show) {
+        if (subtitleText && portalSubtitle) portalSubtitle.innerText = subtitleText;
+        modal.classList.remove('hidden');
+    } else {
+        modal.classList.add('hidden');
+    }
 };
 
-if (openPortalBtn) openPortalBtn.addEventListener('click', () => toggleModal(loginModal, true));
-if (openAdminBtn) openAdminBtn.addEventListener('click', () => toggleModal(loginModal, true));
-if (openPortalBtnHero) openPortalBtnHero.addEventListener('click', () => toggleModal(loginModal, true));
+if (openPortalBtn) openPortalBtn.addEventListener('click', () => toggleModal(loginModal, true, "Resident Portal Access"));
+if (openAdminBtn) openAdminBtn.addEventListener('click', () => toggleModal(loginModal, true, "Secured Administrator Portal"));
+if (openPortalBtnHero) openPortalBtnHero.addEventListener('click', () => toggleModal(loginModal, true, "Resident Portal Access"));
 if (closePortal) closePortal.addEventListener('click', () => toggleModal(loginModal, false));
 if (forgotClose) forgotClose.addEventListener('click', () => toggleModal(forgotModal, false));
 if (regClose) regClose.addEventListener('click', () => toggleModal(registerModal, false));

@@ -35,13 +35,15 @@ app.get('/', (req, res) => {
 // --- Auth Routes ---
 app.post('/api/auth/login', (req, res) => {
     const { id, password } = req.body;
-    db.get("SELECT * FROM users WHERE id = ?", [id], (err, user) => {
+    // Use LOWER() to allow case-insensitive IDs (e.g., 'Admin' or 'admin')
+    db.get("SELECT * FROM users WHERE LOWER(id) = LOWER(?)", [id], (err, user) => {
         if (err) return res.status(500).json({ message: 'Database error' });
         if (!user) return res.status(401).json({ message: 'Invalid credentials' });
 
         const validPassword = bcrypt.compareSync(password, user.password);
         if (!validPassword) return res.status(401).json({ message: 'Invalid credentials' });
 
+        // Admins don't need approval; Users must be approved by Admin
         if (user.role !== 'Admin' && user.isApproved === 0) {
             return res.status(403).json({ message: 'Account pending approval from Admin' });
         }
