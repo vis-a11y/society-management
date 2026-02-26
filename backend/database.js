@@ -369,7 +369,15 @@ function initializeSchema() {
         // Inject initial society info
         db.get("SELECT count(*) as count FROM society_info", (err, row) => {
             if (row && row.count === 0) {
-                db.run("INSERT INTO society_info (id, name, address, flats, manager, healthScore) VALUES (1, 'SocietyHub Premium', 'Elite Enclave, Mumbai', 120, 'Vikas Sharma', 94.5)");
+                db.run("INSERT INTO society_info (id, name, address, flats, manager) VALUES (1, 'SocietyHub Premium', 'Elite Enclave, Mumbai', 120, 'Vikas Sharma')");
+            }
+        });
+
+        // Migration: safely add healthScore column if it doesn't exist yet
+        db.run("ALTER TABLE society_info ADD COLUMN healthScore REAL DEFAULT 94.5", (err) => {
+            // Ignore error if column already exists (SQLITE_ERROR: duplicate column name)
+            if (err && !err.message.includes('duplicate column name')) {
+                console.error('Migration error:', err.message);
             }
         });
     });

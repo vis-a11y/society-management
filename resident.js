@@ -3,7 +3,9 @@
 // Consolidates all resident functionality into one file
 // ============================================================================
 
-const API_BASE = window.location.origin + "/api";
+const API_BASE = (window.location.origin.includes('localhost') && !window.location.origin.includes(':5000')) 
+    ? "http://localhost:5000/api" 
+    : window.location.origin + "/api";
 
 // ============================================================================
 // GLOBAL STATE
