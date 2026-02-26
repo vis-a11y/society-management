@@ -651,11 +651,62 @@ function renderUsers() {
             <td>${u.role}</td>
             <td><span class="status-badge ${u.isApproved ? 'active' : 'pending'}">${u.isApproved ? 'Approved' : 'Pending'}</span></td>
             <td>
-                ${!u.isApproved ? `<button class="btn btn-sm btn-primary" onclick="approveUser('${u.id}')">Approve</button>` : '-'}
+                <div style="display: flex; gap: 0.5rem;">
+                    ${!u.isApproved ? `<button class="btn btn-sm btn-primary" onclick="approveUser('${u.id}')"><i class="fas fa-check"></i> Approve</button>` : ''}
+                    ${u.id.toLowerCase() !== 'admin' ? `<button class="btn btn-sm btn-outline" style="color: #ef4444; border-color: #fecaca;" onclick="deleteUser('${u.id}')"><i class="fas fa-trash"></i></button>` : '-'}
+                </div>
             </td>
         </tr>
     `).join("");
 }
+
+const addUserForm = document.getElementById("addUserForm");
+if (addUserForm) {
+    addUserForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const id = document.getElementById("addUserID").value;
+        const password = document.getElementById("addUserPassword").value;
+        const role = document.getElementById("addUserRole").value;
+        const isApproved = document.getElementById("addUserApproved").checked;
+
+        try {
+            const response = await fetchWithAuth(`${API_BASE}/users`, {
+                method: 'POST',
+                body: JSON.stringify({ id, password, role, isApproved })
+            });
+
+            if (response.ok) {
+                if (window.showToast) window.showToast('Success', 'User created successfully', 'success');
+                closeModal('addUserModal');
+                await loadAllData();
+            } else {
+                const data = await response.json();
+                alert(data.message || 'Failed to create user');
+            }
+        } catch (err) {
+            console.error("Failed to create user", err);
+        }
+    });
+}
+
+window.deleteUser = async (userId) => {
+    if (!confirm(`Are you sure you want to delete user "${userId}"?`)) return;
+    try {
+        const response = await fetchWithAuth(`${API_BASE}/users/${userId}`, {
+            method: 'DELETE'
+        });
+
+        if (response.ok) {
+            if (window.showToast) window.showToast('Deleted', 'User removed successfully', 'info');
+            await loadAllData();
+        } else {
+            const data = await response.json();
+            alert(data.message || 'Failed to delete user');
+        }
+    } catch (err) {
+        console.error("Failed to delete user", err);
+    }
+};
 
 window.approveUser = async (userId) => {
     try {

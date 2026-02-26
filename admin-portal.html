@@ -6,6 +6,10 @@
     <title>SocietyHub - Admin Portal</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#3b82f6">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 </head>
 <body>
 
@@ -527,6 +531,9 @@
                     <h1>User Management</h1>
                     <p>Control user access and permissions</p>
                 </div>
+                <button class="btn btn-primary" onclick="showModal('addUserModal')">
+                    <i class="fas fa-user-plus"></i> Create New User
+                </button>
             </div>
             <div class="card">
                 <div class="card-content">
@@ -656,8 +663,50 @@
     </div>
 </div>
 
+<!-- Add User Modal -->
+<div id="addUserModal" class="modal hidden">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal('addUserModal')">&times;</span>
+        <h3>Create New User</h3>
+        <form id="addUserForm">
+            <div class="form-group">
+                <label>Login ID</label>
+                <input type="text" id="addUserID" required autocomplete="off">
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" id="addUserPassword" required>
+            </div>
+            <div class="form-group">
+                <label>Role</label>
+                <select id="addUserRole">
+                    <option value="User">Resident</option>
+                    <option value="Admin">Admin</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                    <input type="checkbox" id="addUserApproved" checked style="width: auto;"> Approve immediately
+                </label>
+            </div>
+            <button type="submit" class="btn btn-primary full-width">Create User</button>
+        </form>
+    </div>
+</div>
+
+
+
 <script src="toast.js"></script>
 <script src="admin.js"></script>
 <script src="chatbot.js"></script>
+<script>
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('sw.js')
+                .then(reg => console.log('Service Worker Registered!'))
+                .catch(err => console.log('Service Worker Registration Failed:', err));
+        });
+    }
+</script>
 </body>
 </html>

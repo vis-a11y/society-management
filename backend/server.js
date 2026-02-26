@@ -261,6 +261,30 @@ app.patch('/api/users/:id/approve', verifyToken, (req, res) => {
     });
 });
 
+app.post('/api/users', verifyToken, (req, res) => {
+    if (req.user.role !== 'Admin') return res.status(403).json({ message: 'Unauthorized' });
+    const { id, password, role, isApproved } = req.body;
+    const hashedPassword = bcrypt.hashSync(password || 'password123', 10);
+    db.run("INSERT INTO users (id, password, role, isApproved) VALUES (?, ?, ?, ?)",
+        [id, hashedPassword, role || 'User', isApproved ? 1 : 0], function(err) {
+            if (err) {
+                if (err.message.includes('UNIQUE')) return res.status(400).json({ message: 'User already exists' });
+                return res.status(500).json({ message: err.message });
+            }
+            res.status(201).json({ id: id });
+        });
+});
+
+app.delete('/api/users/:id', verifyToken, (req, res) => {
+    if (req.user.role !== 'Admin') return res.status(403).json({ message: 'Unauthorized' });
+    if (req.params.id.toLowerCase() === 'admin') return res.status(400).json({ message: 'Cannot delete primary admin' });
+    db.run("DELETE FROM users WHERE id = ?", [req.params.id], function(err) {
+        if (err) return res.status(500).json({ message: err.message });
+        res.json({ message: 'User deleted' });
+    });
+});
+
+
 // --- Society Info Routes ---
 app.get('/api/society-info', verifyToken, (req, res) => {
     db.get("SELECT * FROM society_info WHERE id = 1", [], (err, row) => {
