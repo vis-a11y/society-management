@@ -25,6 +25,9 @@
                 </div>
 
                 <div class="header-right">
+                    <button class="theme-toggle" id="themeToggle" title="Toggle Theme">
+                        <i class="fas fa-moon"></i>
+                    </button>
                     <button class="notification-btn">
                         <i class="fas fa-bell"></i>
                     </button>
@@ -49,6 +52,10 @@
                         <i class="fas fa-bullhorn"></i>
                         <span>Announcements</span>
                    </button>
+                   <button class="nav-item" onclick="window.location.href='Polls.html'">
+                        <i class="fas fa-square-poll-vertical"></i>
+                        <span>Polls</span>
+                   </button>
                    <button class="nav-item" data-page="settings">
                         <i class="fas fa-calendar-alt"></i>
                         <span>Settings</span>
@@ -62,88 +69,83 @@
 
            <!-- Main Content -->
         <main class="main-content">
-            <!-- Dashboard Page -->
+            <!-- Resident Portal Page -->
             <div class="page active" id="dashboard">
                 <div class="page-header">
                     <div class="page-title">
-                        <h1>Dashboard</h1>
-                        <p>Welcome back! Here's what's happening in your society.</p>
+                        <h1 id="welcomeUser">Resident Portal</h1>
+                        <p id="portalSubtitle">Your personal society dashboard and utilities.</p>
                     </div>
-                    <button class="btn btn-primary">
-                        <i class="fas fa-exclamation-circle"></i>
-                        Quick Actions
+                    <button class="btn btn-primary" id="openComplaintBtn">
+                        <i class="fas fa-plus-circle"></i>
+                        Raise Complaint
                     </button>
                 </div>     
                 <div class="stats grid">
                     <div class="stat-card">
                         <div class="stat-header">
-                            <span class="stat-title">Total Resident</span>
-                            <i class="fas fas-users stat-icon"></i>
+                            <span class="stat-title">My Balance</span>
+                            <i class="fas fa-wallet stat-icon"></i>
                         </div>
                         <div class="stat-content">
-                            <div class="stat-value">248</div>
-                            <div class="stat-change positive">
-                                <i class="fas fa-trending-up"></i>
-                                +12% from last month
+                            <div class="stat-value" id="myBalance">₹0</div>
+                            <div class="stat-change" id="balanceStatus">
+                                <i class="fas fa-check-circle"></i>
+                                Up to date
+                            </div>
+                            <div class="chart-container">
+                                <div class="chart-bar" id="balanceChart" style="width: 100%"></div>
                             </div>
                         </div>
                     </div>
 
                     <div class="stat-card">
                         <div class="stat-header">
-                            <span class="stat-title">Monthly Collection</span>
-                            <i class="fas fa-dollar-sign stat-icon"></i>
+                            <span class="stat-title">Last Payment</span>
+                            <i class="fas fa-receipt stat-icon"></i>
                         </div>
                         <div class="stat-content">
-                            <div class="stat-value">₹4,85,000</div>
-                            <div class="stat-change positive">
-                                <i class="fas fa-trending-up"></i>
-                                +8% from last month
+                            <div class="stat-value" id="lastPayment">₹0</div>
+                            <div class="stat-change neutral" id="lastPaymentDate">
+                                <i class="fas fa-calendar-check"></i>
+                                Paid on --
+                            </div>
+                            <div class="chart-container">
+                                <div class="chart-bar" id="paymentChart" style="width: 100%; background: var(--society-secondary);"></div>
                             </div>
                         </div>
                     </div>
 
                     <div class="stat-card">
                         <div class="stat-header">
-                            <span class="stat-title">Pending Requests</span>
-                            <i class="fas fa-wrench stat-icon"></i>
+                            <span class="stat-title">Active Complaints</span>
+                            <i class="fas fa-exclamation-triangle stat-icon"></i>
                         </div>
                         <div class="stat-content">
-                            <div class="stat-value">17</div>
-                            <div class="stat-change positive">
-                                <i class="fas fa-trending-up"></i>
-                                -23% from last month
+                            <div class="stat-value" id="myActiveComplaints">0</div>
+                            <div class="stat-change" id="complaintTrend">
+                                <i class="fas fa-clock"></i>
+                                Tracking resolution
+                            </div>
+                            <div class="chart-container" style="background: rgba(239, 68, 68, 0.1);">
+                                <div class="chart-bar" id="complaintChart" style="width: 0%; background: #ef4444;"></div>
                             </div>
                         </div>
-                            </head>
-                            <!-- sidebar overlay only at the end of main-container -->
+                    </div>
 
                     <div class="stat-card">
                         <div class="stat-header">
-                            <span class="stat-title">Upcoming Events</span>
-                            <i class="fas fa-calendar stat-icon"></i>
+                            <span class="stat-title">My Unit</span>
+                            <i class="fas fa-home stat-icon"></i>
                         </div>
                         <div class="stat-content">
-                            <div class="stat-value">5</div>
+                            <div class="stat-value" id="myFlatNo">--</div>
                             <div class="stat-change neutral">
-                                <i class="fas fa-trending-up"></i>
-                                +2 from last month
+                                <i class="fas fa-info-circle"></i>
+                                Verified Resident
                             </div>
-                        </div>
-                    </div>
-                </div>
-                
-
-                    <div class="stat-card">
-                        <div class="stat-header">
-                            <span class="stat-title">Upcoming Events</span>
-                            <i class="fas fa-calendar stat-icon"></i>
-                        </div>
-                        <div class="stat-content">
-                            <div class="stat-value">5</div>
-                            <div class="stat-change neutral">
-                                <i class="fas fa-trending-up"></i>
-                                +2 from last month
+                            <div class="chart-container" style="background: rgba(0,0,0,0.05);">
+                                <div class="chart-bar" style="width: 100%; background: var(--society-neutral);"></div>
                             </div>
                         </div>
                     </div>
@@ -155,7 +157,7 @@
                             <h3>Upcoming Events</h3>
                         </div>
                         <div class="card-content">
-                            <div class="event-list">
+                            <div class="event-list" id="upcomingEventsList">
                                 <div class="event-item">
                                     <div class="event-info">
                                         <p class="event-title">Society AGM</p>
@@ -185,47 +187,37 @@
                 <!-- Quick Actions -->
                 <div class="card">
                     <div class="card-header">
-                        <h3>Quick Actions</h3>
+                        <h3>Quick Services</h3>
                     </div>
                     <div class="card-content">
                         <div class="quick-actions">
-                            <button class="quick-action-btn">
-                            <i class="fas fa-users"></i>   
-                            <a href="addResident.html"><span> Add Resident</span></a>
+                            <button class="quick-action-btn" id="payDuesBtn">
+                                <i class="fas fa-credit-card"></i>   
+                                <span>Pay Maintenance</span>
                             </button>
-                            <button class="quick-action-btn">
-                                <i class="fas fa-bell"></i>
-                               <a href="Announcements.html"><span>New notice</span></a>
+                            <button class="quick-action-btn" id="shortcutComplaintBtn">
+                                <i class="fas fa-tools"></i>
+                                <span>Raise Complaint</span>
                             </button>
-                            <button class="quick-action-btn">
-                                <i class="fas fa-wrench"></i>
-                                <a href="maintenance.html"><span>Maintenance</span></a>
+                            <button class="quick-action-btn" onclick="window.location.href='VisitorManagement.html'">
+                                <i class="fas fa-id-badge"></i>
+                                <span>Visitor Entry</span>
                             </button>
-                            <button class="quick-action-btn">
-                                <i class="fas fa-dollar-sign"></i>
-                               <a href="collectfee.html"><span>Collect Fee</span></a>
+                            <button class="quick-action-btn" onclick="window.location.href='FacilityBooking.html'">
+                                <i class="fas fa-calendar-plus"></i>
+                                <span>Book Facility</span>
                             </button>
-                            <button class="quick-action-btn">
-                                 <i class="fa-solid fa-circle-user"></i>
-                                <a href="login.html"><span>login</span></a>
-                            </button>
-
                         </div>
                     </div>
                 </div>
-            </div>
 
             <!-- Residents Page -->
             <div class="page" id="residents">
                 <div class="page-header">
                     <div class="page-title">
-                        <h1>Residents</h1>
-                        <p>Manage society members and their information.</p>
+                        <h1>Society Directory</h1>
+                        <p>Find community members and contact information.</p>
                     </div>
-                    <button class="btn btn-primary">
-                        <i class="fas fa-plus"></i>
-                        <a href="addResident.html">Add New Resident</a>
-                    </button>
                 </div>
 
                 <!-- Search and Filters -->
@@ -336,23 +328,87 @@
                         </div>
                     </div>
 
-                    <div class="card">
-                        <div class="card-header">
-                            <h3>User Management</h3>
-                        </div>
-                        <div class="card-content">
-                            <p>Control user access and permissions.</p>
-                            <button class="btn btn-outline"><a href="userManagement.html"><span>Manage User</span></a></button>
-                        </div>
+            <!-- Activity Timeline -->
+            <div class="card" style="grid-column: span 1.5;">
+                <div class="card-header">
+                    <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                        <h3>Recent Activity</h3>
+                        <span style="font-size: 0.75rem; color: var(--muted-foreground);">Live Community Feed</span>
                     </div>
                 </div>
-            </div>                  
+                <div class="card-content">
+                    <div class="timeline" id="activityTimeline">
+                        <!-- Activity items populated by JS -->
+                    </div>
+                </div>
+            </div>
             </main>
         </div>
-    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+    <!-- Complaint Modal -->
+    <div id="complaintModal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close" id="closeComplaint">&times;</span>
+            <h3 style="margin-bottom: 1.5rem;">Submit New Complaint</h3>
+            <form id="complaintForm">
+                <div class="form-group" style="text-align: left; margin-bottom: 1rem;">
+                    <label style="font-size: 0.8rem; color: #64748b;">Title</label>
+                    <input type="text" id="compTitle" placeholder="Briefly describe the issue" style="width: 100%; padding: 0.5rem; border: 1px solid #e2e8f0; border-radius: 6px;" required>
+                </div>
+                <div class="form-group" style="text-align: left; margin-bottom: 1rem;">
+                    <label style="font-size: 0.8rem; color: #64748b;">Flat/Location</label>
+                    <input type="text" id="compFlat" placeholder="e.g. A-101 or Lobby" style="width: 100%; padding: 0.5rem; border: 1px solid #e2e8f0; border-radius: 6px;" required>
+                </div>
+                <div class="form-group" style="text-align: left; margin-bottom: 1rem;">
+                    <label style="font-size: 0.8rem; color: var(--muted-foreground);">Priority Level</label>
+                    <select id="compPriority" style="width: 100%; padding: 0.5rem; border: 1px solid var(--border); border-radius: 6px; background: var(--card); color: var(--foreground);">
+                        <option value="Low">Low - General Feedback</option>
+                        <option value="Normal" selected>Normal - Standard Fix</option>
+                        <option value="High">High - Urgent Issue</option>
+                        <option value="Emergency">Emergency - Immediate Action</option>
+                    </select>
+                </div>
+                <div class="form-group" style="text-align: left; margin-bottom: 1.5rem;">
+                    <label style="font-size: 0.8rem; color: var(--muted-foreground);">Description</label>
+                    <textarea id="compDesc" rows="3" placeholder="Provide more details" style="width: 100%; padding: 0.5rem; border: 1px solid var(--border); border-radius: 6px; resize: none; background: var(--card); color: var(--foreground);" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Submit Complaint</button>
+            </form>
+        </div>
+    </div>
 
+    <!-- Modals share these styles -->
+    <style>
+        .modal {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(4px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .modal.hidden { display: none; }
+        .modal-content {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 400px;
+            position: relative;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+        }
+        .close {
+            position: absolute;
+            top: 1rem;
+            right: 1.5rem;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #94a3b8;
+        }
+    </style>
 
-
+    <script src="toast.js"></script>
     <script src="script.js"></script>
 </body>
 </html>

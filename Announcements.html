@@ -8,9 +8,22 @@
    
     
 <body>
-    <div class="container">
-    <h2>Announcement</h2>
-    <div id="successMessage" class="success-message">Announcement added successfully!</div>
+    <header class="header">
+        <div class="header-content">
+            <div class="header-left">
+                <div class="logo">
+                    <div class="logo-icon"><i class="fas fa-building"></i></div>
+                    <h1 class="logo-text">SocietyHub</h1>
+                </div>
+            </div>
+            <div class="header-right">
+                <a href="adminDashboard.html" class="btn btn-ghost"><i class="fas fa-arrow-left"></i> Dashboard</a>
+            </div>
+        </div>
+    </header>
+    <div class="container" style="max-width: 600px; margin: 2rem auto; padding: 2rem; background: white; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+    <h2>New Announcement</h2>
+    <div id="successMessage" class="success-message" style="display:none; color: green; margin-bottom: 1rem;">Announcement posted successfully!</div>
     <form id="addAnnouncementForm" novalidate>
       <input type="text" id="Announcement" name="Announcement" placeholder="Announcement title" required />
         <div id="nameError" class="error">Please enter a valid Announcement.</div>
@@ -33,6 +46,7 @@
       <button type="submit">Add Announcement</button>
     </form>
   </div>
-    
+    <script src="toast.js"></script>
+    <script src="Announcements.js"></script>
 </body>
 </html>

@@ -1,85 +1,65 @@
-// Sample default users
-let usersData = [
-    { id: 1, name: "Admin User", email: "admin@society.com", role: "Admin", status: "Active" },
-    { id: 2, name: "Manager", email: "manager@society.com", role: "Manager", status: "Active" },
-    { id: 3, name: "Staff", email: "staff@society.com", role: "Staff", status: "Inactive" }
-];
+const API_BASE = "http://localhost:5000/api";
+let usersData = [];
 
-// Load users from localStorage or default
-function getUsers() {
-    const stored = JSON.parse(localStorage.getItem("users")) || usersData;
-    return stored;
-}
-
-// Save users to localStorage
-function saveUsers(users) {
-    localStorage.setItem("users", JSON.stringify(users));
+// Helper for authenticated requests
+async function fetchWithAuth(url, options = {}) {
+    const token = localStorage.getItem('token');
+    if (token) {
+        options.headers = {
+            ...options.headers,
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+        };
+    }
+    return fetch(url, options);
 }
 
 // Render users table
-function renderUsers() {
+async function renderUsers() {
     const tbody = document.querySelector("#usersTable tbody");
-    tbody.innerHTML = "";
-    const users = getUsers();
-
-    users.forEach(user => {
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
-            <td>${user.name}</td>
-            <td>${user.email}</td>
-            <td>${user.role}</td>
-            <td>${user.status}</td>
-            <td>
-                <button class="btn-action edit-btn" onclick="editUser(${user.id})"><i class="fas fa-edit"></i></button>
-                <button class="btn-action delete-btn" onclick="deleteUser(${user.id})"><i class="fas fa-trash"></i></button>
-                <button class="btn-action toggle-status-btn" onclick="toggleStatus(${user.id})"><i class="fas fa-toggle-on"></i></button>
-            </td>
-        `;
-        tbody.appendChild(tr);
-    });
-}
-
-// Edit User (example: simple prompt for demo)
-function editUser(id) {
-    const users = getUsers();
-    const user = users.find(u => u.id === id);
-    const newName = prompt("Edit Name:", user.name);
-    if (newName) {
-        user.name = newName;
-        saveUsers(users);
-        renderUsers();
+    if (!tbody) return;
+    
+    try {
+        const response = await fetchWithAuth(`${API_BASE}/users`);
+        usersData = await response.json();
+        
+        tbody.innerHTML = "";
+        usersData.forEach(user => {
+            const tr = document.createElement("tr");
+            tr.innerHTML = `
+                <td>${user.name || user.id}</td>
+                <td>${user.email || 'N/A'}</td>
+                <td>${user.role}</td>
+                <td>
+                    <span class="status-badge ${user.status.toLowerCase()}">${user.status}</span>
+                    ${user.isApproved ? '<span class="status-badge active" style="background:#dcfce7; color:#166534">Approved</span>' : '<span class="status-badge pending" style="background:#fef9c3; color:#854d0e">Pending</span>'}
+                </td>
+                <td>
+                    ${!user.isApproved ? `<button class="btn-action approve-btn" onclick="approveUser('${user.id}')" title="Approve"><i class="fas fa-check"></i></button>` : ''}
+                    <button class="btn-action edit-btn" onclick="alert('Feature coming soon')"><i class="fas fa-edit"></i></button>
+                    <button class="btn-action delete-btn" onclick="alert('Feature coming soon')"><i class="fas fa-trash"></i></button>
+                </td>
+            `;
+            tbody.appendChild(tr);
+        });
+    } catch (err) {
+        console.error("Failed to load users", err);
     }
 }
 
-// Delete User
-function deleteUser(id) {
-    let users = getUsers();
-    users = users.filter(u => u.id !== id);
-    saveUsers(users);
-    renderUsers();
-}
-
-// Toggle status
-function toggleStatus(id) {
-    const users = getUsers();
-    const user = users.find(u => u.id === id);
-    user.status = user.status === "Active" ? "Inactive" : "Active";
-    saveUsers(users);
-    renderUsers();
-}
-
-// Add new user
-document.getElementById("addUserBtn").addEventListener("click", () => {
-    const name = prompt("Enter Name:");
-    const email = prompt("Enter Email:");
-    const role = prompt("Enter Role (Admin/Manager/Staff):");
-    if (name && email && role) {
-        const users = getUsers();
-        users.push({ id: Date.now(), name, email, role, status: "Active" });
-        saveUsers(users);
-        renderUsers();
+async function approveUser(id) {
+    try {
+        const response = await fetchWithAuth(`${API_BASE}/users/${id}/approve`, {
+            method: 'PATCH'
+        });
+        if (response.ok) {
+            if (window.showToast) window.showToast('User Approved', `User ${id} can now log in.`, 'success');
+            renderUsers();
+        }
+    } catch (err) {
+        console.error("Approval failed", err);
     }
-});
+}
 
 // Initial render
-renderUsers();
+document.addEventListener("DOMContentLoaded", renderUsers);

@@ -1,88 +1,104 @@
- const form = document.getElementById('addResidentForm');
-    const residentName = document.getElementById('residentName');
-    const flatNumber = document.getElementById('flatNumber');
-    const contactNumber = document.getElementById('contactNumber');
-    const emailID = document.getElementById('emailID');
+const API_BASE = "http://localhost:5000/api";
+const form = document.getElementById('addResidentForm');
+const residentName = document.getElementById('residentName');
+const flatNumber = document.getElementById('flatNumber');
+const contactNumber = document.getElementById('contactNumber');
+const emailID = document.getElementById('emailID');
 
+const nameError = document.getElementById('nameError');
+const flatError = document.getElementById('flatError');
+const contactError = document.getElementById('contactError');
+const successMessage = document.getElementById('successMessage');
+const emailError = document.getElementById('EmailError');
 
-    const nameError = document.getElementById('nameError');
-    const flatError = document.getElementById('flatError');
-    const contactError = document.getElementById('contactError');
-    const successMessage = document.getElementById('successMessage');
-    const emailError = document.getElementById('emailError');
-  
+// Helper for authenticated requests
+async function fetchWithAuth(url, options = {}) {
+    const token = localStorage.getItem('token');
+    if (token) {
+        options.headers = {
+            ...options.headers,
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+        };
+    }
+    return fetch(url, options);
+}
 
-    form.addEventListener('submit', (e) => {
-      e.preventDefault();
+form.addEventListener('submit', async (e) => {
+    e.preventDefault();
 
-      // Hide error and success messages
-      nameError.style.display = 'none';
-      flatError.style.display = 'none';
-      contactError.style.display = 'none';
-      successMessage.style.display = 'none';
+    // Reset messages
+    [nameError, flatError, contactError, emailError, successMessage].forEach(el => {
+        if (el) el.style.display = 'none';
+    });
 
-      let isValid = true;
+    let isValid = true;
 
-      // Validate resident name (only letters and spaces)
-      const nameVal = residentName.value.trim();
-      if (!nameVal || !/^[a-zA-Z\s]+$/.test(nameVal)) {
+    // Validate resident name
+    const nameVal = residentName.value.trim();
+    if (!nameVal || !/^[a-zA-Z\s]+$/.test(nameVal)) {
         nameError.style.display = 'block';
         isValid = false;
-      }
+    }
 
-      // Validate flat number (non-empty)
-      if (!flatNumber.value.trim()) {
+    // Validate flat number
+    if (!flatNumber.value.trim()) {
         flatError.style.display = 'block';
         isValid = false;
-      }
+    }
 
-      // Validate contact number (10 digits)
-      const contactVal = contactNumber.value.trim();
-      if (!/^\d{10}$/.test(contactVal)) {
+    // Validate contact number
+    const contactVal = contactNumber.value.trim();
+    if (!/^\d{10}$/.test(contactVal)) {
         contactError.style.display = 'block';
         isValid = false;
-      }
-
-      if (isValid) {
-        // Show success message and reset form
-        successMessage.style.display = 'block';
-        form.reset();
-      }
-
-     if (!emailID.value.trim() || !emailID.checkValidity()) {
-    emailError.style.display = 'block';
-    isValid = false;
-    } else {
-    emailError.style.display = 'none';
     }
-     if (isValid) {
-    // Create resident object
-    const newResident = {
-      id: Date.now(), // unique ID
-      name: residentName.value.trim(),
-      flat: flatNumber.value.trim(),
-      phone: contactNumber.value.trim(),
-      email: emailID.value.trim(),
-      status: "Active",
-      joinDate: new Date().toLocaleString('default', { month: 'short', year: 'numeric' })
-    };
 
-    // Save to localStorage
-    let residents = JSON.parse(localStorage.getItem('residents')) || [];
-    residents.push(newResident);
-    localStorage.setItem('residents', JSON.stringify(residents));
+    // Validate email
+    const emailVal = emailID.value.trim();
+    if (!emailVal || !emailID.checkValidity()) {
+        emailError.style.display = 'block';
+        isValid = false;
+    }
 
-    // Show success
-    successMessage.style.display = 'block';
+    if (isValid) {
+        const newResident = {
+            name: nameVal,
+            flat: flatNumber.value.trim(),
+            phone: contactVal,
+            email: emailVal,
+            status: "Active",
+            joinDate: new Date().toLocaleString('default', { month: 'short', year: 'numeric' })
+        };
 
-    // Reset form
-    form.reset();
+        try {
+            const response = await fetchWithAuth(`${API_BASE}/residents`, {
+                method: 'POST',
+                body: JSON.stringify(newResident)
+            });
 
-    setTimeout(() => {
-      window.location.href ='index.html'
-    },1500);
-  }
- });
+            if (response.ok) {
+                successMessage.style.display = 'block';
+                form.reset();
+
+                setTimeout(() => {
+                    const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+                    if (currentUser && currentUser.role === "Admin") {
+                        window.location.href = 'adminDashboard.html';
+                    } else {
+                        window.location.href = 'index2.html';
+                    }
+                }, 1500);
+            } else {
+                const data = await response.json();
+                alert(data.message || "Failed to add resident");
+            }
+        } catch (err) {
+            console.error("Error adding resident", err);
+        }
+    }
+});
+
 
 
 

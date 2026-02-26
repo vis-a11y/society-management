@@ -1,14 +1,6 @@
-// Sample residents data (replace with your existing residentsData if available)
-const residentsData = JSON.parse(localStorage.getItem("residentsData")) || [
-    { id: 1, name: "Rajesh Kumar", flat: "A-204" },
-    { id: 2, name: "Priya Sharma", flat: "B-305" },
-    { id: 3, name: "Amit Patel", flat: "C-102" },
-    { id: 4, name: "Sunita Gupta", flat: "A-506" },
-    { id: 5, name: "Sneha Reddy", flat: "C-408" }
-];
-
-// Initialize fees array
-let collectedFees = JSON.parse(localStorage.getItem("collectedFees")) || [];
+const API_BASE = "http://localhost:5000/api";
+let residentsData = [];
+let collectedFees = [];
 
 // DOM Elements
 const residentSelect = document.getElementById("residentSelect");
@@ -16,41 +8,72 @@ const feeForm = document.getElementById("feeForm");
 const feeTableBody = document.querySelector("#feeTable tbody");
 const successMessage = document.getElementById("successMessage");
 
-let editIndex = null; // Track index of fee being edited
+let editIndex = null;
+
+// Helper for authenticated requests
+async function fetchWithAuth(url, options = {}) {
+    const token = localStorage.getItem('token');
+    if (token) {
+        options.headers = {
+            ...options.headers,
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+        };
+    }
+    return fetch(url, options);
+}
 
 // Populate residents dropdown
-function populateResidents() {
-    residentSelect.innerHTML = `<option value="">Select Resident</option>`;
-    residentsData.forEach(resident => {
-        const option = document.createElement("option");
-        option.value = resident.id;
-        option.textContent = `${resident.name} (${resident.flat})`;
-        residentSelect.appendChild(option);
-    });
+async function populateResidents() {
+    try {
+        const response = await fetchWithAuth(`${API_BASE}/residents`);
+        residentsData = await response.json();
+        
+        residentSelect.innerHTML = `<option value="">Select Resident</option>`;
+        residentsData.forEach(resident => {
+            const option = document.createElement("option");
+            option.value = resident.id;
+            option.textContent = `${resident.name} (${resident.flat})`;
+            residentSelect.appendChild(option);
+        });
+    } catch (err) {
+        console.error("Failed to load residents", err);
+    }
 }
 
 // Render fees table
-function renderFeesTable() {
-    feeTableBody.innerHTML = "";
-    collectedFees.forEach((fee, index) => {
-        const resident = residentsData.find(r => r.id == fee.residentId);
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
-            <td>${resident ? resident.name : "Unknown"}</td>
-            <td>${fee.month}</td>
-            <td>₹${fee.amount}</td>
-            <td><span class="fee-status ${fee.status}">${fee.status}</span></td>
-            <td>
-                <button class="action-btn edit-btn" data-index="${index}">Edit</button>
-                <button class="action-btn delete-btn" data-index="${index}">Delete</button>
-            </td>
-        `;
-        feeTableBody.appendChild(tr);
-    });
+async function renderFeesTable() {
+    try {
+        const response = await fetchWithAuth(`${API_BASE}/fees`);
+        collectedFees = await response.json();
+        
+        feeTableBody.innerHTML = "";
+        if (collectedFees.length === 0) {
+            feeTableBody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: #999; padding: 2rem;">No fee records found.</td></tr>`;
+            return;
+        }
+
+        collectedFees.forEach((fee, index) => {
+            const resident = residentsData.find(r => r.id == fee.residentId);
+            const tr = document.createElement("tr");
+            tr.innerHTML = `
+                <td>${resident ? resident.name : "Unknown"}</td>
+                <td>${fee.month}</td>
+                <td>₹${parseInt(fee.amount).toLocaleString()}</td>
+                <td><span class="status-badge ${fee.status.toLowerCase()}">${fee.status}</span></td>
+                <td>
+                    <!-- Edit/Delete suppressed for backend demo unless implemented -->
+                </td>
+            `;
+            feeTableBody.appendChild(tr);
+        });
+    } catch (err) {
+        console.error("Failed to load fees", err);
+    }
 }
 
 // Handle form submission
-feeForm.addEventListener("submit", function (e) {
+feeForm.addEventListener("submit", async function (e) {
     e.preventDefault();
 
     const residentId = residentSelect.value;
@@ -60,68 +83,28 @@ feeForm.addEventListener("submit", function (e) {
 
     if (!residentId || !month || !amount || !status) return;
 
-    if (editIndex !== null) {
-        // Edit existing fee
-        collectedFees[editIndex] = {
-            residentId: parseInt(residentId),
-            month,
-            amount,
-            status
-        };
-        editIndex = null; // Reset edit index
-    } else {
-        // Add new fee
-        collectedFees.push({
-            residentId: parseInt(residentId),
-            month,
-            amount,
-            status
+    const newFee = { residentId: parseInt(residentId), month, amount, status };
+
+    try {
+        const response = await fetchWithAuth(`${API_BASE}/fees`, {
+            method: 'POST',
+            body: JSON.stringify(newFee)
         });
-    }
 
-    // Save to localStorage
-    localStorage.setItem("collectedFees", JSON.stringify(collectedFees));
-
-    // Render table
-    renderFeesTable();
-
-    // Show success message
-    successMessage.textContent = "Fee saved successfully!";
-    successMessage.style.display = "block";
-    setTimeout(() => {
-        successMessage.style.display = "none";
-    }, 3000);
-
-    // Reset form
-    feeForm.reset();
-});
-
-// Handle Edit/Delete buttons using event delegation
-feeTableBody.addEventListener("click", function (e) {
-    const index = e.target.getAttribute("data-index");
-    if (e.target.classList.contains("delete-btn")) {
-        // Delete fee
-        collectedFees.splice(index, 1);
-        localStorage.setItem("collectedFees", JSON.stringify(collectedFees));
-        renderFeesTable();
-    } else if (e.target.classList.contains("edit-btn")) {
-        // Edit fee: populate form
-        const fee = collectedFees[index];
-        residentSelect.value = fee.residentId;
-        document.getElementById("feeMonth").value = fee.month;
-        document.getElementById("feeAmount").value = fee.amount;
-        document.getElementById("feeStatus").value = fee.status;
-        editIndex = index; // Track which fee is being edited
-        successMessage.textContent = "Editing fee. Update and submit.";
-        successMessage.style.display = "block";
-        setTimeout(() => {
-            successMessage.style.display = "none";
-        }, 3000);
+        if (response.ok) {
+            successMessage.style.display = "block";
+            setTimeout(() => { successMessage.style.display = "none"; }, 3000);
+            feeForm.reset();
+            await renderFeesTable();
+        }
+    } catch (err) {
+        console.error("Failed to save fee", err);
     }
 });
 
 // Initialize page
-document.addEventListener("DOMContentLoaded", () => {
-    populateResidents();
-    renderFeesTable();
+document.addEventListener("DOMContentLoaded", async () => {
+    await populateResidents();
+    await renderFeesTable();
 });
+

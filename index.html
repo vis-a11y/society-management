@@ -1,36 +1,162 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="login.css">
-  <title>Society Management Login</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="login.css">
+    <link rel="stylesheet" href="landing.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <title>SocietyHub - Premium Residential Community</title>
 </head>
-<body>
-    <div class="login-container">
-        <h2>Society Management System</h2>
+<body class="landing-page">
+    <!-- Header -->
+    <header class="landing-header">
+        <div class="logo">
+            <i class="fas fa-building"></i>
+            <span style="font-weight: 900; font-size: 1.5rem; letter-spacing: -1px; font-family: 'Outfit', sans-serif;">SocietyHub</span>
+        </div>
+        <nav class="landing-nav">
+            <a href="#hero" class="nav-link">Home</a>
+            <a href="#amenities" class="nav-link">Amenities</a>
+            <a href="#community" class="nav-link">Community</a>
+            <div style="display: flex; gap: 0.75rem; align-items: center; margin-left: 1rem;">
+                <button class="btn btn-danger" id="openAdminBtn" style="padding: 0.6rem 1.25rem; font-size: 0.85rem;"><i class="fas fa-user-shield"></i> Admin</button>
+                <button class="btn btn-primary" id="openPortalBtn" style="padding: 0.6rem 1.25rem; font-size: 0.85rem;"><i class="fas fa-door-open"></i> Resident Portal</button>
+            </div>
+        </nav>
+    </header>
 
-        <div id="errorMessage" class="error-message">Invalid login credentials!</div>
+    <!-- Hero Section -->
+    <section class="hero" id="hero" style="background-image: url('society_hero_background.png');">
+        <div class="hero-content">
+            <h1>Elegance in Every Detail.</h1>
+            <p>Experience the pinnacle of urban living at SocietyHub. A community built on security, comfort, and premium lifestyle.</p>
+            <div style="display: flex; gap: 1.5rem; justify-content: center; margin-top: 3rem;">
+                <button class="btn btn-primary" style="padding: 1.25rem 2.5rem; min-width: 220px;" onclick="window.location.hash='amenities'">
+                    <i class="fas fa-compass"></i> Discover Lifestyle
+                </button>
+                <button class="btn btn-outline" style="padding: 1.25rem 2.5rem; min-width: 200px; color: white; border-color: rgba(255,255,255,0.4); background: rgba(255,255,255,0.05);" id="openPortalBtnHero">
+                    <i class="fas fa-lock"></i> Portal Secure Login
+                </button>
+            </div>
+        </div>
+    </section>
 
-        <form id="loginForm" novalidate>
-            <input type="text" id="loginID" placeholder="Login ID" required>
-            <input type="password" id="password" placeholder="Password" required>
-            
-            <button type="submit" class="btn">Login</button>
-        </form>
+    <!-- Amenities Section -->
+    <section class="section reveal" id="amenities" style="background: #f8fafc;">
+        <h2 class="section-title">World Class <span>Amenities</span></h2>
+        <div class="amenities-grid">
+            <div class="amenity-card">
+                <div class="amenity-icon"><i class="fas fa-swimmer"></i></div>
+                <h3>Infinity Pool</h3>
+                <p>Clean, temperature-controlled pool with a dedicated children's section.</p>
+            </div>
+            <div class="amenity-card">
+                <div class="amenity-icon"><i class="fas fa-dumbbell"></i></div>
+                <h3>Modern Gym</h3>
+                <p>State-of-the-art equipment and professional fitness trainers available.</p>
+            </div>
+            <div class="amenity-card">
+                <div class="amenity-icon"><i class="fas fa-leaf"></i></div>
+                <h3>Green Parks</h3>
+                <p>Beautifully manicured gardens and quiet walking tracks for residents.</p>
+            </div>
+        </div>
+    </section>
 
-        <div class="options">
-            <a href="#" id="forgotPassword">Forgot Password?</a> | 
-            <a href="#" id="registerUser">Register</a>
+    <!-- Community Stats Section -->
+    <section class="section reveal" id="community" style="background: white;">
+        <h2 class="section-title">A Thriving <span>Community</span></h2>
+        <div class="amenities-grid">
+             <div class="amenity-card">
+                <i class="fas fa-shield-alt" style="font-size: 2.5rem; color: var(--primary); margin-bottom: 1rem;"></i>
+                <h3 class="counter" data-target="24">0</h3>
+                <p>High-Level Security</p>
+            </div>
+            <div class="amenity-card">
+                <i class="fas fa-users" style="font-size: 2.5rem; color: var(--primary); margin-bottom: 1rem;"></i>
+                <h3 class="counter" data-target="350">0</h3>
+                <p>Happy Families</p>
+            </div>
+            <div class="amenity-card">
+                <i class="fas fa-star" style="font-size: 2.5rem; color: var(--primary); margin-bottom: 1rem;"></i>
+                <h3 class="counter" data-target="98">0</h3>
+                <p>Resident Satisfaction %</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="section reveal" id="testimonials" style="background: #f1f5f9;">
+        <h2 class="section-title">Voices of Our <span>Residents</span></h2>
+        <div class="testimonials-grid">
+            <div class="testimonial-card">
+                <i class="fas fa-quote-right"></i>
+                <p>"The management here is top-notch. Any issues I've had with my flat were resolved in hours, not days."</p>
+                <div class="resident-cite">
+                    <div class="resident-avatar-small"></div>
+                    <div>
+                        <strong>Vikas Sharma</strong>
+                        <p style="font-size: 0.8rem; color: var(--muted-foreground);">Resident since 2021</p>
+                    </div>
+                </div>
+            </div>
+            <div class="testimonial-card">
+                <i class="fas fa-quote-right"></i>
+                <p>"Safe environment for kids and great community events. We've truly found our home here."</p>
+                <div class="resident-cite">
+                    <div class="resident-avatar-small"></div>
+                    <div>
+                        <strong>Anjali Gupta</strong>
+                        <p style="font-size: 0.8rem; color: var(--muted-foreground);">Resident since 2022</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Portal Login Modal -->
+    <div id="loginModal" class="modal hidden">
+        <div class="login-container" style="max-width: 400px; position: relative;">
+            <span class="close" id="closePortal" style="position: absolute; top: 1rem; right: 1.5rem; cursor: pointer; font-size: 1.5rem;">&times;</span>
+            <h2>SocietyHub</h2>
+            <p class="subtitle">Resident Portal Access</p>
+
+            <div id="errorMessage" class="error-message">Invalid login credentials!</div>
+
+            <form id="loginForm" novalidate>
+                <div class="form-group">
+                    <label for="loginID">Login ID</label>
+                    <input type="text" id="loginID" placeholder="Enter your ID" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" placeholder="••••••••" required>
+                </div>
+                
+                <button type="submit" class="btn">Login to Dashboard</button>
+            </form>
+
+            <div class="options">
+                <a href="#" id="forgotPassword">Forgot Password?</a>
+                <div class="register-prompt">
+                    <span>Don't have an account?</span>
+                    <a href="#" id="registerUser">Create Account</a>
+                </div>
+            </div>
         </div>
     </div>
 
     <!-- Forgot Password Modal -->
     <div id="forgotModal" class="modal hidden">
         <div class="modal-content">
-            <span class="close">&times;</span>
+            <span class="close" id="forgotClose">&times;</span>
             <h3>Forgot Password</h3>
-            <input type="text" id="forgotID" placeholder="Enter Login ID" required>
+            <p style="margin-bottom: 1.5rem; color: #666;">Enter your Login ID to receive a reset link.</p>
+            <div class="form-group">
+                <input type="text" id="forgotID" placeholder="Login ID" required>
+            </div>
             <button id="resetBtn" class="btn">Reset Password</button>
             <p id="resetMessage" class="success-message"></p>
         </div>
@@ -39,20 +165,73 @@
     <!-- Register Modal -->
     <div id="registerModal" class="modal hidden">
         <div class="modal-content">
-            <span class="close" id="registerClose">&times;</span>
-            <h3>Register User</h3>
-            <input type="text" id="regID" placeholder="Login ID" required>
-            <input type="password" id="regPassword" placeholder="Password" required>
-            <select id="role">
-                <option value="User">User</option>
-                <option value="Admin">Admin</option>
-            </select>
-            <button id="registerBtn" class="btn">Register</button>
+            <span class="close" id="regClose">&times;</span>
+            <h3>Register Account</h3>
+            <div class="form-group">
+                <label>Login ID</label>
+                <input type="text" id="regID" placeholder="Choose a unique ID" required>
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" id="regPassword" placeholder="Min. 6 characters" required>
+            </div>
+            <div class="form-group" style="display:none;">
+                <label>Account Type</label>
+                <select id="role">
+                    <option value="User">Resident</option>
+                </select>
+            </div>
+            <button id="registerBtn" class="btn">Create Account</button>
             <p id="registerMessage" class="success-message"></p>
         </div>
     </div>
 
+    <!-- Footer -->
+    <footer class="landing-footer">
+        <div class="footer-grid">
+            <div class="footer-brand">
+                <div class="logo" style="color: white; margin-bottom: 1.5rem;">
+                    <i class="fas fa-building" style="color: var(--primary);"></i>
+                    <span style="font-weight: 900; font-size: 1.5rem; letter-spacing: -1px; font-family: 'Outfit', sans-serif;">SocietyHub</span>
+                </div>
+                <p style="opacity: 0.7; line-height: 1.8; font-size: 0.95rem;">Elevating residential living through smart technology, zero-trust security, and a commitment to community excellence.</p>
+            </div>
+            <div class="footer-links">
+                <h4>Platform</h4>
+                <ul>
+                    <li><a href="#hero">Overview</a></li>
+                    <li><a href="#amenities">Amenities</a></li>
+                    <li><a href="#community">Community</a></li>
+                    <li><a href="#testimonials">Testimonials</a></li>
+                </ul>
+            </div>
+            <div class="footer-links">
+                <h4>Support</h4>
+                <ul>
+                    <li><a href="#">Help Center</a></li>
+                    <li><a href="#">Safety Rules</a></li>
+                    <li><a href="#">Privacy Policy</a></li>
+                    <li><a href="#">Contact Us</a></li>
+                </ul>
+            </div>
+            <div class="footer-links">
+                <h4>Connect</h4>
+                <div style="display: flex; gap: 1rem;">
+                    <a href="#" style="font-size: 1.2rem;"><i class="fab fa-facebook"></i></a>
+                    <a href="#" style="font-size: 1.2rem;"><i class="fab fa-instagram"></i></a>
+                    <a href="#" style="font-size: 1.2rem;"><i class="fab fa-twitter"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 SocietyHub. All rights reserved.</p>
+            <p>Made with <i class="fas fa-heart" style="color: #ef4444;"></i> for community living</p>
+        </div>
+    </footer>
+
+    <script src="toast.js"></script>
     <script src="login.js"></script>
+    <script src="landing.js"></script>
 </body>
 </html>
 
