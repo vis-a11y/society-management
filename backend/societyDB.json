@@ -1,0 +1,26 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "role": "Admin",
+      "name": "admin",
+      "password": "$2b$10$tDnbt8Sp1eaOa2jrRZ9fcuOBmQ.YfkD8IxPIZN4N3Cj82Ek/Sot7K"
+    },
+    {
+      "id": 2,
+      "role": "Resident",
+      "name": "user",
+      "flat": "101",
+      "phone": "1234567890",
+      "password": "$2b$10$Wsj7BP5EKVFTk/CZb5a7geAYymbQ68vFvmrVbrvXbQM9H6B.4OnuC"
+    }
+  ],
+  "notices": [],
+  "visitors": [],
+  "staff": [],
+  "events": [],
+  "maintenance": [],
+  "complaints": [],
+  "documents": [],
+  "messages": []
+}
