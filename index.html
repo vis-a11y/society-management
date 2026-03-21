@@ -44,6 +44,13 @@
     <!-- Register Form (Hidden by default) -->
     <form id="registerForm" style="display: none;">
         <div class="form-group">
+            <label>Register As</label>
+            <select class="form-control" name="role" required>
+                <option value="Resident">Resident</option>
+                <option value="Admin">Management / Admin</option>
+            </select>
+        </div>
+        <div class="form-group">
             <label>Full Name</label>
             <input type="text" class="form-control" name="name" placeholder="E.g., John Doe" required>
         </div>
@@ -52,11 +59,19 @@
             <input type="email" class="form-control" name="email" placeholder="E.g., you@gmail.com" required>
         </div>
         <div class="form-group">
+            <label>Flat Number</label>
+            <input type="text" class="form-control" name="flat" placeholder="E.g., A-101" required>
+        </div>
+        <div class="form-group">
+            <label>Phone Number</label>
+            <input type="text" class="form-control" name="phone" placeholder="E.g., +91 9876543210" required>
+        </div>
+        <div class="form-group">
             <label>Password</label>
-            <input type="password" class="form-control" name="password" placeholder="Create a password" required>
+            <input type="password" class="form-control" name="password" placeholder="Create a strong password" required>
         </div>
         <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center; margin-top: 1rem;">
-            Create Resident Account <i class="fas fa-user-plus"></i>
+            Create Account <i class="fas fa-user-plus"></i>
         </button>
         <div style="text-align: center; margin-top: 1.5rem;">
             <p class="muted" style="font-size:0.9rem">Already registered? <a href="#" onclick="toggleAuth('login')" style="color:var(--primary); font-weight:700;">Sign In</a></p>
@@ -101,7 +116,8 @@
                 alert(err.error || 'Registration failed');
             }
         } catch(err) {
-            alert('Server effectively offline or database inaccessible.');
+            alert('Error during registration: ' + err.message);
+            console.error('Registration Error:', err);
         }
     });
 </script>

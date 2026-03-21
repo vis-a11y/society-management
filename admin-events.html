@@ -24,7 +24,23 @@
         </div>
     </aside><main class="main-content">
         <div class="page-header"><div><h1>ADMIN-EVENTS</h1></div></div>
-        <div class="card"><div class="card-content">Module configured and accessible via API.</div></div>
+        <div class="card">
+            <div class="card-header"><h3 class="card-title"><i class="fas fa-calendar-plus" style="margin-right:.75rem;color:var(--primary)"></i>Create New Event</h3></div>
+            <div class="card-content">
+                <form id="actionForm" onsubmit="handleForm(event, 'events')">
+                    <div class="grid-2">
+                        <div class="form-group"><label>Event Title</label><input type="text" name="title" class="form-control" placeholder="E.g., Annual Sports Day" required></div>
+                        <div class="form-group"><label>Event Date</label><input type="date" name="date" class="form-control" required></div>
+                    </div>
+                    <div class="form-group"><label>Description</label><textarea name="description" class="form-control" placeholder="Tell residents about this event..." rows="3"></textarea></div>
+                    <button class="btn btn-primary" type="submit"><i class="fas fa-plus"></i> Create Event</button>
+                </form>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header"><h3 class="card-title">All Events</h3></div>
+            <div class="card-content"><div id="dataTable" class="activity-list"></div></div>
+        </div>
     </main></div>
 <script src="app.js"></script>
 </body>

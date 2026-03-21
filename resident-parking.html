@@ -24,7 +24,20 @@
         </div>
     </aside><main class="main-content">
         <div class="page-header"><div><h1>RESIDENT-PARKING</h1></div></div>
-        <div class="card"><div class="card-content">Module configured and accessible via API.</div></div>
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-title"><i class="fas fa-car"></i> &nbsp;My Parking Slot</div>
+                <div class="stat-value" id="parking-slot-val">—</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-title"><i class="fas fa-motorcycle"></i> &nbsp;My Vehicle</div>
+                <div class="stat-value" id="parking-vehicle-val" style="font-size:1.5rem">—</div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header"><h3 class="card-title">All Occupied Parking Slots</h3></div>
+            <div class="card-content"><div id="dataTable" class="activity-list"></div></div>
+        </div>
     </main></div>
 <script src="app.js"></script>
 </body>

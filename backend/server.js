@@ -26,21 +26,13 @@ app.post('/api/auth/login', async (req, res) => {
         const pool = getPool();
         const { name, password, role } = req.body;
         
-        let [users] = await pool.query('SELECT * FROM users WHERE name = ? AND role = ?', [name, role]);
-        let user = users[0];
+        const [users] = await pool.query('SELECT * FROM users WHERE name = ? AND role = ?', [name, role]);
+        const user = users[0];
 
-        // Any Gmail -> Registration Handle via specific format checking 
-        if (!user && name.includes('@')) {
-            const hash = await bcrypt.hash(password, 10);
-            const [result] = await pool.query(`INSERT INTO users (role, name, flat, phone, password) VALUES (?, ?, '101', 'Dynamic', ?)`, [role, name, hash]);
-            const [newUsers] = await pool.query('SELECT * FROM users WHERE id = ?', [result.insertId]);
-            user = newUsers[0];
-        }
-
-        if (!user) return res.status(400).json({ error: 'User not found' });
+        if (!user) return res.status(400).json({ error: 'User not found. Please register first.' });
         
         const valid = await bcrypt.compare(password, user.password);
-        if (!valid) return res.status(400).json({ error: 'Invalid password' });
+        if (!valid) return res.status(400).json({ error: 'Invalid password.' });
 
         const token = jwt.sign({ id: user.id, role: user.role, name: user.name, flat: user.flat }, JWT_SECRET, { expiresIn: '12h' });
         res.json({ token, user: { id: user.id, role: user.role, name: user.name, flat: user.flat } });
@@ -50,14 +42,19 @@ app.post('/api/auth/login', async (req, res) => {
 app.post('/api/auth/register', async (req, res) => {
     try {
         const pool = getPool();
-        const { name, email, password } = req.body;
-        
+        const { name, email, password, role, flat, phone } = req.body;
+        const identifier = email || name;
+        const userRole = role || 'Resident';
+
         // Prevent dupes
-        const [existing] = await pool.query('SELECT * FROM users WHERE name = ?', [email || name]);
+        const [existing] = await pool.query('SELECT * FROM users WHERE name = ?', [identifier]);
         if (existing.length > 0) return res.status(400).json({ error: "Email already in use" });
-        
+
         const hash = await bcrypt.hash(password, 10);
-        const [result] = await pool.query(`INSERT INTO users (role, name, flat, phone, password) VALUES (?, ?, '101', 'N/A', ?)`, ['Resident', email || name, hash]);
+        const [result] = await pool.query(
+            `INSERT INTO users (role, name, flat, phone, password) VALUES (?, ?, ?, ?, ?)`,
+            [userRole, identifier, flat || '101', phone || 'N/A', hash]
+        );
         res.json({ success: true, id: result.insertId });
     } catch (e) { res.status(500).json({ error: e.message }); }
 });
@@ -68,7 +65,8 @@ app.get('/api/users/profile', auth, async (req, res) => {
     res.json(u[0]);
 });
 app.put('/api/users/profile', auth, async (req, res) => {
-    await getPool().query('UPDATE users SET phone = ?, vehicle_details = ? WHERE id = ?', [req.body.phone, req.body.vehicle_details, req.user.id]);
+    await getPool().query('UPDATE users SET phone = ?, vehicle_details = ? WHERE id = ?',
+        [req.body.phone || null, req.body.vehicle_details || null, req.user.id]);
     res.json({ success: true });
 });
 app.get('/api/users/residents', auth, async (req, res) => {
@@ -104,7 +102,10 @@ app.patch('/api/visitors/:id', auth, async (req, res) => {
 });
 
 app.get('/api/maintenance', auth, async (req, res) => {
-    const [items] = await getPool().query('SELECT * FROM maintenance ' + (req.user.role === 'Admin' ? '' : 'WHERE resident_id = ?') + ' ORDER BY id DESC', [req.user.role === 'Admin' ? '' : req.user.id]);
+    const isAdmin = req.user.role === 'Admin';
+    const q = isAdmin ? 'SELECT * FROM maintenance ORDER BY id DESC' : 'SELECT * FROM maintenance WHERE resident_id = ? ORDER BY id DESC';
+    const params = isAdmin ? [] : [req.user.id];
+    const [items] = await getPool().query(q, params);
     res.json(items);
 });
 app.post('/api/maintenance', auth, async (req, res) => {
@@ -117,7 +118,10 @@ app.patch('/api/maintenance/:id/pay', auth, async (req, res) => {
 });
 
 app.get('/api/complaints', auth, async (req, res) => {
-    const [items] = await getPool().query('SELECT * FROM complaints ' + (req.user.role === 'Admin' ? '' : 'WHERE resident_id = ?') + ' ORDER BY date DESC', [req.user.role === 'Admin' ? '' : req.user.id]);
+    const isAdmin = req.user.role === 'Admin';
+    const q = isAdmin ? 'SELECT * FROM complaints ORDER BY date DESC' : 'SELECT * FROM complaints WHERE resident_id = ? ORDER BY date DESC';
+    const params = isAdmin ? [] : [req.user.id];
+    const [items] = await getPool().query(q, params);
     res.json(items);
 });
 app.post('/api/complaints', auth, async (req, res) => {
@@ -127,6 +131,60 @@ app.post('/api/complaints', auth, async (req, res) => {
 app.patch('/api/complaints/:id/status', auth, async (req, res) => {
     await getPool().query('UPDATE complaints SET status = ? WHERE id = ?', [req.body.status, req.params.id]);
     res.json({ success: true });
+});
+
+// ======== EVENTS ========
+app.get('/api/events', auth, async (req, res) => {
+    const [events] = await getPool().query('SELECT * FROM events ORDER BY id DESC');
+    res.json(events);
+});
+app.post('/api/events', auth, async (req, res) => {
+    if (req.user.role !== 'Admin') return res.status(403).json({ error: 'Admin only' });
+    const [q] = await getPool().query('INSERT INTO events (title, date, description) VALUES (?, ?, ?)', [req.body.title, req.body.date, req.body.description]);
+    res.json({ success: true, id: q.insertId });
+});
+
+// ======== STAFF ========
+app.get('/api/staff', auth, async (req, res) => {
+    const [staff] = await getPool().query('SELECT * FROM staff ORDER BY id DESC');
+    res.json(staff);
+});
+app.post('/api/staff', auth, async (req, res) => {
+    if (req.user.role !== 'Admin') return res.status(403).json({ error: 'Admin only' });
+    const [q] = await getPool().query('INSERT INTO staff (name, role, shift, salary, attendance) VALUES (?, ?, ?, ?, ?)', [req.body.name, req.body.role, req.body.shift, req.body.salary, 'Present']);
+    res.json({ success: true, id: q.insertId });
+});
+
+// ======== PARKING ========
+app.get('/api/parking', auth, async (req, res) => {
+    const [users] = await getPool().query('SELECT id, name, flat, parking_slot, vehicle_details FROM users WHERE parking_slot IS NOT NULL AND parking_slot != ""');
+    res.json(users);
+});
+app.post('/api/parking', auth, async (req, res) => {
+    if (req.user.role !== 'Admin') return res.status(403).json({ error: 'Admin only' });
+    await getPool().query('UPDATE users SET parking_slot = ? WHERE id = ?', [req.body.parking_slot, req.body.resident_id]);
+    res.json({ success: true });
+});
+
+// ======== DOCUMENTS ========
+app.get('/api/documents', auth, async (req, res) => {
+    const [docs] = await getPool().query('SELECT * FROM documents ORDER BY date DESC');
+    res.json(docs);
+});
+app.post('/api/documents', auth, async (req, res) => {
+    if (req.user.role !== 'Admin') return res.status(403).json({ error: 'Admin only' });
+    const [q] = await getPool().query('INSERT INTO documents (title, file_url, uploaded_by, date) VALUES (?, ?, ?, NOW())', [req.body.title, req.body.file_url, req.user.id]);
+    res.json({ success: true, id: q.insertId });
+});
+
+// ======== MESSAGES ========
+app.get('/api/messages', auth, async (req, res) => {
+    const [msgs] = await getPool().query('SELECT * FROM messages WHERE sender_id = ? OR receiver_id = ? ORDER BY timestamp DESC', [req.user.id, req.user.id]);
+    res.json(msgs);
+});
+app.post('/api/messages', auth, async (req, res) => {
+    const [q] = await getPool().query('INSERT INTO messages (sender_id, receiver_id, message, timestamp) VALUES (?, ?, ?, NOW())', [req.user.id, req.body.receiver_id, req.body.message]);
+    res.json({ success: true, id: q.insertId });
 });
 
 app.listen(5000, () => { console.log('Backend & MySQL Database successfully established running on port 5000'); });

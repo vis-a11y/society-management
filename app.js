@@ -4,7 +4,9 @@ const API_BASE = (window.location.hostname === 'localhost' || window.location.ho
 
 function authHeaders() {
     const token = localStorage.getItem('token');
-    if (!token && !window.location.href.includes('index.html')) {
+    if (!token && !window.location.href.includes('index.html') && window.location.protocol !== 'file:') {
+        // Only redirect if we are on a named page that is not the login page
+    } else if (!token && !window.location.href.includes('index.html') && !window.location.pathname.endsWith('/') && !window.location.pathname.endsWith('index.html')) {
         window.location.href = 'index.html';
     }
     return {
@@ -167,6 +169,125 @@ document.addEventListener('DOMContentLoaded', async () => {
         <div class="activity-item">
             <div style="flex:1"><b>\${c.subject}</b><br><small class="muted">\${c.description}</small></div>
             <div style="width: 150px"><span class="status-badge">\${c.status}</span></div>
+        </div>`);
+    }
+
+    if (loc.includes('resident-visitors')) {
+        loadTable('visitors', 'dataTable', v => `
+        <div class="activity-item">
+            <div style="flex:1"><b>\${v.name}</b><br><small class="muted">Purpose: \${v.purpose} | Phone: \${v.phone || 'N/A'}</small></div>
+            <div style="width: 150px"><span class="status-badge">\${v.status}</span></div>
+            <div>\${new Date(v.entry_time).toLocaleString()}</div>
+        </div>`);
+    }
+
+    if (loc.includes('admin-residents')) {
+        loadTable('users/residents', 'dataTable', r => `
+        <div class="activity-item">
+            <div class="logo-icon" style="width: 40px; height: 40px; border-radius: 50%; font-size: 1rem;"><i class="fas fa-user"></i></div>
+            <div style="flex:1"><b>\${r.name}</b><br><small class="muted">Flat \${r.flat || 'N/A'} | Phone: \${r.phone || 'N/A'}</small></div>
+        </div>`);
+    }
+
+    if (loc.includes('resident-profile')) {
+        try {
+            const res = await fetch(`${API_BASE}/users/profile`, { headers: authHeaders() });
+            if (res.ok) {
+                const profile = await res.json();
+                document.getElementById('profile-name').innerText = profile.name;
+                document.getElementById('profile-flat').innerText = profile.flat || '101';
+                document.getElementById('phone-input').value = profile.phone === 'N/A' ? '' : profile.phone;
+                document.getElementById('vehicle-input').value = profile.vehicle_details || '';
+            }
+        } catch (err) {}
+    }
+
+    // ---- EVENTS (Both Admin & Resident view) ----
+    if (loc.includes('admin-events') || loc.includes('resident-events')) {
+        loadTable('events', 'dataTable', e => `
+        <div class="activity-item">
+            <div class="logo-icon" style="width:44px;height:44px;border-radius:12px;font-size:1.1rem;flex-shrink:0"><i class="fas fa-calendar"></i></div>
+            <div style="flex:1">
+                <b>\${e.title}</b><br>
+                <small class="muted">\${e.description || 'No description'}</small>
+            </div>
+            <div style="text-align:right;flex-shrink:0">
+                <span class="status-badge" style="background:rgba(99,102,241,0.15);color:var(--primary-light);border-color:rgba(99,102,241,0.3)">\${e.date}</span>
+            </div>
+        </div>`);
+    }
+
+    // ---- STAFF (Admin only) ----
+    if (loc.includes('admin-staff')) {
+        loadTable('staff', 'dataTable', s => `
+        <div class="activity-item">
+            <div class="logo-icon" style="width:44px;height:44px;border-radius:50%;font-size:1rem;flex-shrink:0"><i class="fas fa-user-tie"></i></div>
+            <div style="flex:1">
+                <b>\${s.name}</b><br>
+                <small class="muted">\${s.role} &bull; \${s.shift}</small>
+            </div>
+            <div style="text-align:right">
+                <div style="font-weight:700;color:var(--success)">₹\${s.salary}/mo</div>
+                <small class="muted">\${s.attendance || 'Present'}</small>
+            </div>
+        </div>`);
+    }
+
+    // ---- PARKING (Admin) ----
+    if (loc.includes('admin-parking')) {
+        loadTable('parking', 'dataTable', p => `
+        <div class="activity-item">
+            <div class="logo-icon" style="width:44px;height:44px;border-radius:12px;font-size:1.1rem;flex-shrink:0"><i class="fas fa-car"></i></div>
+            <div style="flex:1">
+                <b>\${p.name}</b> &mdash; Flat \${p.flat || 'N/A'}<br>
+                <small class="muted">\${p.vehicle_details || 'No vehicle info'}</small>
+            </div>
+            <div><span class="status-badge" style="background:rgba(16,185,129,0.15);color:var(--success);border-color:rgba(16,185,129,0.3)">Slot: \${p.parking_slot}</span></div>
+        </div>`);
+    }
+
+    // ---- PARKING (Resident) ----
+    if (loc.includes('resident-parking')) {
+        try {
+            const res = await fetch(`${API_BASE}/users/profile`, { headers: authHeaders() });
+            if (res.ok) {
+                const profile = await res.json();
+                const slotEl = document.getElementById('parking-slot-val');
+                const vehicleEl = document.getElementById('parking-vehicle-val');
+                if (slotEl) slotEl.innerText = profile.parking_slot || 'Not Assigned';
+                if (vehicleEl) vehicleEl.innerText = profile.vehicle_details || 'Not Set';
+            }
+        } catch (err) {}
+        loadTable('parking', 'dataTable', p => `
+        <div class="activity-item">
+            <div class="logo-icon" style="width:44px;height:44px;border-radius:12px;font-size:1rem;flex-shrink:0"><i class="fas fa-car"></i></div>
+            <div style="flex:1"><b>\${p.name}</b> &mdash; Flat \${p.flat || 'N/A'}</div>
+            <div><span class="status-badge" style="background:rgba(16,185,129,0.15);color:var(--success);border-color:rgba(16,185,129,0.3)">Slot: \${p.parking_slot}</span></div>
+        </div>`);
+    }
+
+    // ---- DOCUMENTS (Both Admin & Resident view) ----
+    if (loc.includes('admin-documents') || loc.includes('resident-documents')) {
+        loadTable('documents', 'dataTable', d => `
+        <div class="activity-item">
+            <div class="logo-icon" style="width:44px;height:44px;border-radius:12px;font-size:1.1rem;flex-shrink:0"><i class="fas fa-file-pdf"></i></div>
+            <div style="flex:1">
+                <b>\${d.title}</b><br>
+                <small class="muted">Uploaded on \${new Date(d.date).toLocaleDateString()}</small>
+            </div>
+            <div><a href="\${d.file_url}" target="_blank" class="btn btn-primary" style="padding:.6rem 1.25rem;font-size:.85rem"><i class="fas fa-external-link-alt"></i> Open</a></div>
+        </div>`);
+    }
+
+    // ---- MESSAGES (Resident) ----
+    if (loc.includes('resident-messages')) {
+        loadTable('messages', 'dataTable', m => `
+        <div class="activity-item">
+            <div class="logo-icon" style="width:44px;height:44px;border-radius:50%;font-size:1rem;flex-shrink:0"><i class="fas fa-envelope"></i></div>
+            <div style="flex:1"><small class="muted">\${m.message}</small></div>
+            <div style="text-align:right;flex-shrink:0">
+                <small class="muted">\${new Date(m.timestamp).toLocaleString()}</small>
+            </div>
         </div>`);
     }
 });

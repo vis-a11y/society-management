@@ -42,6 +42,8 @@ async function initDB() {
         await pool.query(`CREATE TABLE IF NOT EXISTS events (id INT AUTO_INCREMENT PRIMARY KEY, title VARCHAR(100), date VARCHAR(50), description TEXT)`);
         await pool.query(`CREATE TABLE IF NOT EXISTS maintenance (id INT AUTO_INCREMENT PRIMARY KEY, resident_id INT, month VARCHAR(50), amount INT, status VARCHAR(50) DEFAULT 'Pending')`);
         await pool.query(`CREATE TABLE IF NOT EXISTS complaints (id INT AUTO_INCREMENT PRIMARY KEY, resident_id INT, subject VARCHAR(200), description TEXT, status VARCHAR(50) DEFAULT 'Pending', date DATETIME)`);
+        await pool.query(`CREATE TABLE IF NOT EXISTS documents (id INT AUTO_INCREMENT PRIMARY KEY, title VARCHAR(200), file_url TEXT, uploaded_by INT, date DATETIME)`);
+        await pool.query(`CREATE TABLE IF NOT EXISTS messages (id INT AUTO_INCREMENT PRIMARY KEY, sender_id INT, receiver_id INT, message TEXT, timestamp DATETIME)`);
 
         // Check and Seed Default Admin logic (If users table is empty)
         const [rows] = await pool.query("SELECT * FROM users WHERE role = 'Admin'");

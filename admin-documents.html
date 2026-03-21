@@ -24,7 +24,22 @@
         </div>
     </aside><main class="main-content">
         <div class="page-header"><div><h1>ADMIN-DOCUMENTS</h1></div></div>
-        <div class="card"><div class="card-content">Module configured and accessible via API.</div></div>
+        <div class="card">
+            <div class="card-header"><h3 class="card-title"><i class="fas fa-file-upload" style="margin-right:.75rem;color:var(--primary)"></i>Upload Society Document</h3></div>
+            <div class="card-content">
+                <form id="actionForm" onsubmit="handleForm(event, 'documents')">
+                    <div class="grid-2">
+                        <div class="form-group"><label>Document Title</label><input type="text" name="title" class="form-control" placeholder="E.g., Society By-Laws 2024" required></div>
+                        <div class="form-group"><label>Document Link (URL)</label><input type="url" name="file_url" class="form-control" placeholder="E.g., https://drive.google.com/..." required></div>
+                    </div>
+                    <button class="btn btn-primary" type="submit"><i class="fas fa-upload"></i> Publish Document</button>
+                </form>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header"><h3 class="card-title">Document Library</h3></div>
+            <div class="card-content"><div id="dataTable" class="activity-list"></div></div>
+        </div>
     </main></div>
 <script src="app.js"></script>
 </body>

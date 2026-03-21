@@ -24,7 +24,31 @@
         </div>
     </aside><main class="main-content">
         <div class="page-header"><div><h1>ADMIN-STAFF</h1></div></div>
-        <div class="card"><div class="card-content">Module configured and accessible via API.</div></div>
+        <div class="card">
+            <div class="card-header"><h3 class="card-title"><i class="fas fa-user-plus" style="margin-right:.75rem;color:var(--primary)"></i>Add New Staff Member</h3></div>
+            <div class="card-content">
+                <form id="actionForm" onsubmit="handleForm(event, 'staff')">
+                    <div class="grid-2">
+                        <div class="form-group"><label>Full Name</label><input type="text" name="name" class="form-control" placeholder="E.g., Ramesh Kumar" required></div>
+                        <div class="form-group"><label>Role / Designation</label><input type="text" name="role" class="form-control" placeholder="E.g., Security Guard, Cleaner" required></div>
+                        <div class="form-group"><label>Shift</label>
+                            <select name="shift" class="form-control" required>
+                                <option value="">Select Shift</option>
+                                <option value="Morning (6AM - 2PM)">Morning (6AM - 2PM)</option>
+                                <option value="Afternoon (2PM - 10PM)">Afternoon (2PM - 10PM)</option>
+                                <option value="Night (10PM - 6AM)">Night (10PM - 6AM)</option>
+                            </select>
+                        </div>
+                        <div class="form-group"><label>Monthly Salary (₹)</label><input type="number" name="salary" class="form-control" placeholder="E.g., 12000" required></div>
+                    </div>
+                    <button class="btn btn-primary" type="submit"><i class="fas fa-plus"></i> Add Staff</button>
+                </form>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header"><h3 class="card-title">Staff Directory</h3></div>
+            <div class="card-content"><div id="dataTable" class="activity-list"></div></div>
+        </div>
     </main></div>
 <script src="app.js"></script>
 </body>

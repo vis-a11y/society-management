@@ -24,7 +24,22 @@
         </div>
     </aside><main class="main-content">
         <div class="page-header"><div><h1>ADMIN-PARKING</h1></div></div>
-        <div class="card"><div class="card-content">Module configured and accessible via API.</div></div>
+        <div class="card">
+            <div class="card-header"><h3 class="card-title"><i class="fas fa-parking" style="margin-right:.75rem;color:var(--primary)"></i>Assign Parking Slot</h3></div>
+            <div class="card-content">
+                <form id="actionForm" onsubmit="handleForm(event, 'parking')">
+                    <div class="grid-2">
+                        <div class="form-group"><label>Resident ID</label><input type="number" name="resident_id" class="form-control" placeholder="Enter Resident's ID" required></div>
+                        <div class="form-group"><label>Parking Slot Number</label><input type="text" name="parking_slot" class="form-control" placeholder="E.g., P-012 or B2-Slot-5" required></div>
+                    </div>
+                    <button class="btn btn-primary" type="submit"><i class="fas fa-check"></i> Assign Slot</button>
+                </form>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header"><h3 class="card-title">Current Parking Allocations</h3></div>
+            <div class="card-content"><div id="dataTable" class="activity-list"></div></div>
+        </div>
     </main></div>
 <script src="app.js"></script>
 </body>

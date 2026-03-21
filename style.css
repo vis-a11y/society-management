@@ -92,6 +92,22 @@ body {
     position: fixed;
     height: 100vh;
     z-index: 100;
+    overflow-y: auto; /* Makes the sidebar scrollable */
+}
+
+/* Custom Scrollbar specifically for Sidebar, matching dark/glass theme */
+.sidebar::-webkit-scrollbar {
+    width: 6px;
+}
+.sidebar::-webkit-scrollbar-track {
+    background: transparent; 
+}
+.sidebar::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1); 
+    border-radius: 10px;
+}
+.sidebar::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.2); 
 }
 
 .logo {
@@ -121,6 +137,7 @@ body {
     letter-spacing: -0.5px;
     background: linear-gradient(to right, #fff, var(--text-secondary));
     -webkit-background-clip: text;
+    background-clip: text;
     -webkit-text-fill-color: transparent;
 }
 
@@ -191,6 +208,7 @@ body {
     letter-spacing: -1px;
     background: linear-gradient(135deg, #fff 0%, #cbd5e1 100%);
     -webkit-background-clip: text;
+    background-clip: text;
     -webkit-text-fill-color: transparent;
 }
 
@@ -340,6 +358,7 @@ body {
     margin-top: 1rem;
     background: linear-gradient(135deg, #fff 0%, #cbd5e1 100%);
     -webkit-background-clip: text;
+    background-clip: text;
     -webkit-text-fill-color: transparent;
 }
 
