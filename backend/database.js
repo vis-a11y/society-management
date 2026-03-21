@@ -1,90 +1,63 @@
-const fs = require('fs');
-const path = require('path');
+const mysql = require('mysql2/promise');
 const bcrypt = require('bcryptjs');
 
-const dbPath = path.join(__dirname, 'societyDB.json');
+// Database Connection Pooling
+let pool;
 
-let db = {
-    users: [],
-    notices: [],
-    visitors: [],
-    staff: [],
-    events: [],
-    maintenance: [],
-    complaints: [],
-    documents: [],
-    messages: []
-};
+const DB_PASS = 'Vishal@7673'; // Defined your password globally
 
-// Initialize or load DB
-function initDB() {
-    if (fs.existsSync(dbPath)) {
-        db = JSON.parse(fs.readFileSync(dbPath, 'utf8'));
-    } else {
-        // Defaults
-        const adminHash = bcrypt.hashSync('admin123', 10);
-        const userHash = bcrypt.hashSync('user123', 10);
-        db.users.push({ id: 1, role: 'Admin', name: 'admin', password: adminHash });
-        db.users.push({ id: 2, role: 'Resident', name: 'user', flat: '101', phone: '1234567890', password: userHash });
-        saveDB();
+async function initDB() {
+    try {
+        // Connect generic first to create database if missing
+        const bootstrap = await mysql.createConnection({
+            host: '127.0.0.1', user: 'root', password: DB_PASS
+        });
+        await bootstrap.query("CREATE DATABASE IF NOT EXISTS societyHub");
+        await bootstrap.end();
+
+        // Connect specifically to our database
+        pool = mysql.createPool({
+            host: '127.0.0.1',
+            user: 'root',
+            password: DB_PASS,
+            database: 'societyHub',
+            waitForConnections: true,
+            connectionLimit: 10
+        });
+
+        console.log('Successfully connected to MySQL Database!');
+
+        // Run migrations -> Create tables
+        await pool.query(`CREATE TABLE IF NOT EXISTS users (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            role VARCHAR(50) NOT NULL,
+            name VARCHAR(100) NOT NULL,
+            flat VARCHAR(50), phone VARCHAR(50), 
+            password VARCHAR(255) NOT NULL,
+            parking_slot VARCHAR(100), vehicle_details VARCHAR(255)
+        )`);
+        await pool.query(`CREATE TABLE IF NOT EXISTS notices (id INT AUTO_INCREMENT PRIMARY KEY, title TEXT, content TEXT, date DATETIME)`);
+        await pool.query(`CREATE TABLE IF NOT EXISTS visitors (id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(100), flat VARCHAR(50), purpose TEXT, phone VARCHAR(50), status VARCHAR(50), entry_time DATETIME, exit_time DATETIME)`);
+        await pool.query(`CREATE TABLE IF NOT EXISTS staff (id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(100), role VARCHAR(50), shift VARCHAR(50), salary INT, attendance VARCHAR(50))`);
+        await pool.query(`CREATE TABLE IF NOT EXISTS events (id INT AUTO_INCREMENT PRIMARY KEY, title VARCHAR(100), date VARCHAR(50), description TEXT)`);
+        await pool.query(`CREATE TABLE IF NOT EXISTS maintenance (id INT AUTO_INCREMENT PRIMARY KEY, resident_id INT, month VARCHAR(50), amount INT, status VARCHAR(50) DEFAULT 'Pending')`);
+        await pool.query(`CREATE TABLE IF NOT EXISTS complaints (id INT AUTO_INCREMENT PRIMARY KEY, resident_id INT, subject VARCHAR(200), description TEXT, status VARCHAR(50) DEFAULT 'Pending', date DATETIME)`);
+
+        // Check and Seed Default Admin logic (If users table is empty)
+        const [rows] = await pool.query("SELECT * FROM users WHERE role = 'Admin'");
+        if (rows.length === 0) {
+            const hash = await bcrypt.hash('admin@123', 10);
+            await pool.query(`INSERT INTO users (role, name, flat, phone, password) VALUES ('Admin', 'admin@gmail.com', 'N/A', 'N/A', ?)`, [hash]);
+            console.log("Default Admin created -> username: admin@gmail.com | pwd: admin@123");
+        }
+    } catch (err) {
+        console.error("Failed to connect to MySQL backend:", err.message);
+        console.error("Please ensure XAMPP (or MySQL) is installed and the 'MySQL' module is actively running locally.");
     }
-}
-
-function saveDB() {
-    fs.writeFileSync(dbPath, JSON.stringify(db, null, 2));
-}
-
-function generateId(table) {
-    if (db[table].length === 0) return 1;
-    return Math.max(...db[table].map(i => i.id)) + 1;
 }
 
 initDB();
 
 module.exports = {
-    // ---- READS ----
-    getUsers: () => db.users,
-    getUser: (id) => db.users.find(u => u.id == id),
-    getUserByName: (name, role) => db.users.find(u => u.name === name && u.role === role),
-    getResidents: () => db.users.filter(u => u.role === 'Resident'),
-    
-    getNotices: () => [...db.notices].reverse(),
-    getVisitors: (role, flat) => role === 'Admin' ? [...db.visitors].reverse() : db.visitors.filter(v => v.flat === flat).reverse(),
-    getStaff: () => [...db.staff],
-    getEvents: () => [...db.events].reverse(),
-    
-    getMaintenance: (role, uid) => {
-        const mList = role === 'Admin' ? [...db.maintenance] : db.maintenance.filter(m => m.resident_id == uid);
-        mList.forEach(m => { const u = db.users.find(x => x.id == m.resident_id); if (u) { m.resident_name = u.name; m.flat = u.flat; } });
-        return mList.reverse();
-    },
-    
-    getComplaints: (role, uid) => {
-        const cList = role === 'Admin' ? [...db.complaints] : db.complaints.filter(c => c.resident_id == uid);
-        cList.forEach(c => { const u = db.users.find(x => x.id == c.resident_id); if (u) { c.resident_name = u.name; c.flat = u.flat; } });
-        return cList.reverse();
-    },
-
-    getMessages: () => [...db.messages].reverse(),
-
-    // ---- WRITES ----
-    addUser: (userObj) => { const id = generateId('users'); db.users.push({id, ...userObj}); saveDB(); return id; },
-    updateUser: (id, data) => { const i = db.users.findIndex(u=>u.id==id); if(i>-1) { db.users[i]={...db.users[i], ...data}; saveDB(); } },
-
-    addNotice: (data) => { const id = generateId('notices'); db.notices.push({id, ...data}); saveDB(); return id; },
-
-    addVisitor: (data) => { const id = generateId('visitors'); db.visitors.push({id, ...data}); saveDB(); return id; },
-    updateVisitor: (id, data) => { const i = db.visitors.findIndex(v=>v.id==id); if(i>-1) { db.visitors[i]={...db.visitors[i], ...data}; saveDB(); } },
-
-    addStaff: (data) => { const id = generateId('staff'); db.staff.push({id, ...data}); saveDB(); return id; },
-
-    addEvent: (data) => { const id = generateId('events'); db.events.push({id, ...data}); saveDB(); return id; },
-
-    addMaintenance: (data) => { const id = generateId('maintenance'); db.maintenance.push({id, ...data, status: 'Pending'}); saveDB(); return id; },
-    updateMaintenance: (id, status) => { const i = db.maintenance.findIndex(m=>m.id==id); if(i>-1) { db.maintenance[i].status=status; saveDB(); } },
-
-    addComplaint: (data) => { const id = generateId('complaints'); db.complaints.push({id, ...data, status: 'Pending'}); saveDB(); return id; },
-    updateComplaint: (id, status) => { const i = db.complaints.findIndex(c=>c.id==id); if(i>-1) { db.complaints[i].status=status; saveDB(); } },
-
-    addMessage: (data) => { const id = generateId('messages'); db.messages.push({id, ...data}); saveDB(); return id; }
+    getPool: () => pool
 };

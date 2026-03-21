@@ -3,19 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SocietyHub - Login</title>
+    <title>SocietyHub - Portal</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 </head>
-<body style="display: flex; align-items: center; justify-content: center; background: var(--background);">
+<body style="display: flex; align-items: center; justify-content: center; background: var(--bg-base);">
 
 <div class="auth-container" style="width: 100%;">
     <div style="text-align: center; margin-bottom: 2rem;">
         <div class="logo-icon" style="margin: 0 auto 1rem;"><i class="fas fa-building"></i></div>
         <h2 style="font-size: 1.8rem; font-weight: 800;">SocietyHub</h2>
-        <p class="muted">Enter portal details</p>
+        <p class="muted" id="auth-subtitle">Sign in to your account</p>
     </div>
 
+    <!-- Login Form -->
     <form id="loginForm">
         <div class="form-group">
             <label>Login As</label>
@@ -25,19 +26,84 @@
             </select>
         </div>
         <div class="form-group">
-            <label>Email Address</label>
-            <input type="email" class="form-control" name="name" placeholder="E.g., you@gmail.com (or 'admin')" required>
+            <label>Email Address / Username</label>
+            <input type="text" class="form-control" name="name" placeholder="E.g., you@gmail.com (or 'admin')" required>
         </div>
         <div class="form-group">
             <label>Password</label>
-            <input type="password" class="form-control" name="password" placeholder="Any password" required>
+            <input type="password" class="form-control" name="password" placeholder="Your password" required>
         </div>
         <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center; margin-top: 1rem;">
             Sign In Securely <i class="fas fa-arrow-right"></i>
         </button>
+        <div style="text-align: center; margin-top: 1.5rem;">
+            <p class="muted" style="font-size:0.9rem">New Resident? <a href="#" onclick="toggleAuth('register')" style="color:var(--primary); font-weight:700;">Create Account</a></p>
+        </div>
     </form>
+
+    <!-- Register Form (Hidden by default) -->
+    <form id="registerForm" style="display: none;">
+        <div class="form-group">
+            <label>Full Name</label>
+            <input type="text" class="form-control" name="name" placeholder="E.g., John Doe" required>
+        </div>
+        <div class="form-group">
+            <label>Email Address</label>
+            <input type="email" class="form-control" name="email" placeholder="E.g., you@gmail.com" required>
+        </div>
+        <div class="form-group">
+            <label>Password</label>
+            <input type="password" class="form-control" name="password" placeholder="Create a password" required>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center; margin-top: 1rem;">
+            Create Resident Account <i class="fas fa-user-plus"></i>
+        </button>
+        <div style="text-align: center; margin-top: 1.5rem;">
+            <p class="muted" style="font-size:0.9rem">Already registered? <a href="#" onclick="toggleAuth('login')" style="color:var(--primary); font-weight:700;">Sign In</a></p>
+        </div>
+    </form>
+
 </div>
 
 <script src="app.js"></script>
+<script>
+    // Tab Toggle logic
+    function toggleAuth(type) {
+        if(type === 'register') {
+            document.getElementById('loginForm').style.display = 'none';
+            document.getElementById('registerForm').style.display = 'block';
+            document.getElementById('auth-subtitle').innerText = 'Register your flat allocation';
+        } else {
+            document.getElementById('loginForm').style.display = 'block';
+            document.getElementById('registerForm').style.display = 'none';
+            document.getElementById('auth-subtitle').innerText = 'Sign in to your account';
+        }
+    }
+
+    // Register Handler
+    document.getElementById('registerForm').addEventListener('submit', async(e) => {
+        e.preventDefault();
+        const data = Object.fromEntries(new FormData(e.target));
+        try {
+            const API_BASE = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.protocol === 'file:') ? "http://localhost:5000/api" : window.location.origin + "/api";
+            const res = await fetch(API_BASE + '/auth/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+            if (res.ok) {
+                alert('Account Created! You can now log in.');
+                toggleAuth('login');
+                // Pre-fill the email they just created for easy access
+                document.querySelector('#loginForm input[name="name"]').value = data.email;
+            } else {
+                const err = await res.json();
+                alert(err.error || 'Registration failed');
+            }
+        } catch(err) {
+            alert('Server effectively offline or database inaccessible.');
+        }
+    });
+</script>
 </body>
 </html>
