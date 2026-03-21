@@ -23,6 +23,24 @@ function auth(req, res, next) {
 // ======== AUTH ========
 app.post('/api/auth/login', async (req, res) => {
     const { name, password, role } = req.body;
+    
+    // Dynamic Auto-Registration for ANY Gmail ID or specific email patterns
+    if (name.toLowerCase().includes('@')) {
+        let user = db.getUserByName(name, role);
+        if (!user) {
+            // Auto Register logic implementation
+            const hash = await bcrypt.hash(password, 10);
+            const id = db.addUser({ role, name, flat: '101', phone: 'N/A', password: hash });
+            user = db.getUser(id);
+        } else {
+            const valid = await bcrypt.compare(password, user.password);
+            if (!valid) return res.status(400).json({ error: 'Invalid password' });
+        }
+        const token = jwt.sign({ id: user.id, role: user.role, name: user.name, flat: user.flat }, JWT_SECRET, { expiresIn: '12h' });
+        return res.json({ token, user: { id: user.id, role: user.role, name: user.name, flat: user.flat } });
+    }
+
+    // Standard Login
     const user = db.getUserByName(name, role);
     if (!user) return res.status(400).json({ error: 'User not found' });
     
