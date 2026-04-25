@@ -7,7 +7,9 @@ let pool;
 async function initDB() {
     try {
         // Connect specifically to our database using environment variables
+        console.log(`Connecting to database at ${process.env.DB_HOST || '127.0.0.1'}...`);
         pool = mysql.createPool({
+
             host: process.env.DB_HOST || '127.0.0.1',
             user: process.env.DB_USER || 'root',
             password: process.env.DB_PASSWORD || 'Vishal@7673',
