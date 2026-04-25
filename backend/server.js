@@ -187,9 +187,16 @@ app.post('/api/messages', auth, async (req, res) => {
     res.json({ success: true, id: q.insertId });
 });
 
-if (process.env.NODE_ENV !== 'production') {
-    app.listen(5000, () => { console.log('Backend running on port 5000'); });
+// Port configuration for Render/Local
+const PORT = process.env.PORT || 5000;
+
+// On Vercel, we export the app. On Render/Local, we listen.
+if (process.env.VERCEL !== '1') {
+    app.listen(PORT, () => { 
+        console.log(`Backend running on port ${PORT}`); 
+    });
 }
 
 module.exports = app;
+
 
