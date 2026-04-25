@@ -4,26 +4,20 @@ const bcrypt = require('bcryptjs');
 // Database Connection Pooling
 let pool;
 
-const DB_PASS = 'Vishal@7673'; // Defined your password globally
-
 async function initDB() {
     try {
-        // Connect generic first to create database if missing
-        const bootstrap = await mysql.createConnection({
-            host: '127.0.0.1', user: 'root', password: DB_PASS
-        });
-        await bootstrap.query("CREATE DATABASE IF NOT EXISTS societyHub");
-        await bootstrap.end();
-
-        // Connect specifically to our database
+        // Connect specifically to our database using environment variables
         pool = mysql.createPool({
-            host: '127.0.0.1',
-            user: 'root',
-            password: DB_PASS,
-            database: 'societyHub',
+            host: process.env.DB_HOST || '127.0.0.1',
+            user: process.env.DB_USER || 'root',
+            password: process.env.DB_PASSWORD || 'Vishal@7673',
+            database: process.env.DB_NAME || 'societyHub',
+            port: process.env.DB_PORT || 3306,
             waitForConnections: true,
-            connectionLimit: 10
+            connectionLimit: 10,
+            ssl: process.env.DB_SSL === 'true' ? { rejectUnauthorized: false } : null
         });
+
 
         console.log('Successfully connected to MySQL Database!');
 

@@ -187,4 +187,9 @@ app.post('/api/messages', auth, async (req, res) => {
     res.json({ success: true, id: q.insertId });
 });
 
-app.listen(5000, () => { console.log('Backend & MySQL Database successfully established running on port 5000'); });
+if (process.env.NODE_ENV !== 'production') {
+    app.listen(5000, () => { console.log('Backend running on port 5000'); });
+}
+
+module.exports = app;
+
