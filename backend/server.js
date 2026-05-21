@@ -74,6 +74,11 @@ app.get('/api/users/residents', auth, async (req, res) => {
     const [users] = await getPool().query('SELECT id, name, flat, phone FROM users WHERE role = "Resident"');
     res.json(users);
 });
+app.delete('/api/users/residents/:id', auth, async (req, res) => {
+    if (req.user.role !== 'Admin') return res.status(403).json({ error: 'Admin only' });
+    await getPool().query('DELETE FROM users WHERE id = ? AND role = "Resident"', [req.params.id]);
+    res.json({ success: true });
+});
 
 // ======== DASHBOARD ========
 app.get('/api/notices', auth, async (req, res) => {
@@ -84,6 +89,11 @@ app.post('/api/notices', auth, async (req, res) => {
     if (req.user.role !== 'Admin') return res.status(403).json({ error: 'Admin only' });
     const [q] = await getPool().query('INSERT INTO notices (title, content, date) VALUES (?, ?, NOW())', [req.body.title, req.body.content]);
     res.json({ success: true, id: q.insertId });
+});
+app.delete('/api/notices/:id', auth, async (req, res) => {
+    if (req.user.role !== 'Admin') return res.status(403).json({ error: 'Admin only' });
+    await getPool().query('DELETE FROM notices WHERE id = ?', [req.params.id]);
+    res.json({ success: true });
 });
 
 app.get('/api/visitors', auth, async (req, res) => {
@@ -101,10 +111,17 @@ app.patch('/api/visitors/:id', auth, async (req, res) => {
     await getPool().query('UPDATE visitors SET status = ?, exit_time = NOW() WHERE id = ?', [req.body.status, req.params.id]);
     res.json({ success: true });
 });
+app.delete('/api/visitors/:id', auth, async (req, res) => {
+    if (req.user.role !== 'Admin') return res.status(403).json({ error: 'Admin only' });
+    await getPool().query('DELETE FROM visitors WHERE id = ?', [req.params.id]);
+    res.json({ success: true });
+});
 
 app.get('/api/maintenance', auth, async (req, res) => {
     const isAdmin = req.user.role === 'Admin';
-    const q = isAdmin ? 'SELECT * FROM maintenance ORDER BY id DESC' : 'SELECT * FROM maintenance WHERE resident_id = ? ORDER BY id DESC';
+    const q = isAdmin 
+        ? 'SELECT m.*, u.name, u.flat FROM maintenance m LEFT JOIN users u ON m.resident_id = u.id ORDER BY m.id DESC' 
+        : 'SELECT * FROM maintenance WHERE resident_id = ? ORDER BY id DESC';
     const params = isAdmin ? [] : [req.user.id];
     const [items] = await getPool().query(q, params);
     res.json(items);
@@ -117,10 +134,17 @@ app.patch('/api/maintenance/:id/pay', auth, async (req, res) => {
     await getPool().query("UPDATE maintenance SET status = 'Paid' WHERE id = ?", [req.params.id]);
     res.json({ success: true });
 });
+app.delete('/api/maintenance/:id', auth, async (req, res) => {
+    if (req.user.role !== 'Admin') return res.status(403).json({ error: 'Admin only' });
+    await getPool().query('DELETE FROM maintenance WHERE id = ?', [req.params.id]);
+    res.json({ success: true });
+});
 
 app.get('/api/complaints', auth, async (req, res) => {
     const isAdmin = req.user.role === 'Admin';
-    const q = isAdmin ? 'SELECT * FROM complaints ORDER BY date DESC' : 'SELECT * FROM complaints WHERE resident_id = ? ORDER BY date DESC';
+    const q = isAdmin 
+        ? 'SELECT c.*, u.name, u.flat FROM complaints c LEFT JOIN users u ON c.resident_id = u.id ORDER BY c.date DESC' 
+        : 'SELECT * FROM complaints WHERE resident_id = ? ORDER BY date DESC';
     const params = isAdmin ? [] : [req.user.id];
     const [items] = await getPool().query(q, params);
     res.json(items);
@@ -131,6 +155,11 @@ app.post('/api/complaints', auth, async (req, res) => {
 });
 app.patch('/api/complaints/:id/status', auth, async (req, res) => {
     await getPool().query('UPDATE complaints SET status = ? WHERE id = ?', [req.body.status, req.params.id]);
+    res.json({ success: true });
+});
+app.delete('/api/complaints/:id', auth, async (req, res) => {
+    if (req.user.role !== 'Admin') return res.status(403).json({ error: 'Admin only' });
+    await getPool().query('DELETE FROM complaints WHERE id = ?', [req.params.id]);
     res.json({ success: true });
 });
 
@@ -144,6 +173,11 @@ app.post('/api/events', auth, async (req, res) => {
     const [q] = await getPool().query('INSERT INTO events (title, date, description) VALUES (?, ?, ?)', [req.body.title, req.body.date, req.body.description]);
     res.json({ success: true, id: q.insertId });
 });
+app.delete('/api/events/:id', auth, async (req, res) => {
+    if (req.user.role !== 'Admin') return res.status(403).json({ error: 'Admin only' });
+    await getPool().query('DELETE FROM events WHERE id = ?', [req.params.id]);
+    res.json({ success: true });
+});
 
 // ======== STAFF ========
 app.get('/api/staff', auth, async (req, res) => {
@@ -155,6 +189,11 @@ app.post('/api/staff', auth, async (req, res) => {
     const [q] = await getPool().query('INSERT INTO staff (name, role, shift, salary, attendance) VALUES (?, ?, ?, ?, ?)', [req.body.name, req.body.role, req.body.shift, req.body.salary, 'Present']);
     res.json({ success: true, id: q.insertId });
 });
+app.delete('/api/staff/:id', auth, async (req, res) => {
+    if (req.user.role !== 'Admin') return res.status(403).json({ error: 'Admin only' });
+    await getPool().query('DELETE FROM staff WHERE id = ?', [req.params.id]);
+    res.json({ success: true });
+});
 
 // ======== PARKING ========
 app.get('/api/parking', auth, async (req, res) => {
@@ -164,6 +203,11 @@ app.get('/api/parking', auth, async (req, res) => {
 app.post('/api/parking', auth, async (req, res) => {
     if (req.user.role !== 'Admin') return res.status(403).json({ error: 'Admin only' });
     await getPool().query('UPDATE users SET parking_slot = ? WHERE id = ?', [req.body.parking_slot, req.body.resident_id]);
+    res.json({ success: true });
+});
+app.delete('/api/parking/:id', auth, async (req, res) => {
+    if (req.user.role !== 'Admin') return res.status(403).json({ error: 'Admin only' });
+    await getPool().query('UPDATE users SET parking_slot = NULL WHERE id = ?', [req.params.id]);
     res.json({ success: true });
 });
 
@@ -177,6 +221,11 @@ app.post('/api/documents', auth, async (req, res) => {
     const [q] = await getPool().query('INSERT INTO documents (title, file_url, uploaded_by, date) VALUES (?, ?, ?, NOW())', [req.body.title, req.body.file_url, req.user.id]);
     res.json({ success: true, id: q.insertId });
 });
+app.delete('/api/documents/:id', auth, async (req, res) => {
+    if (req.user.role !== 'Admin') return res.status(403).json({ error: 'Admin only' });
+    await getPool().query('DELETE FROM documents WHERE id = ?', [req.params.id]);
+    res.json({ success: true });
+});
 
 // ======== MESSAGES ========
 app.get('/api/messages', auth, async (req, res) => {
@@ -186,6 +235,10 @@ app.get('/api/messages', auth, async (req, res) => {
 app.post('/api/messages', auth, async (req, res) => {
     const [q] = await getPool().query('INSERT INTO messages (sender_id, receiver_id, message, timestamp) VALUES (?, ?, ?, NOW())', [req.user.id, req.body.receiver_id, req.body.message]);
     res.json({ success: true, id: q.insertId });
+});
+app.delete('/api/messages/:id', auth, async (req, res) => {
+    await getPool().query('DELETE FROM messages WHERE id = ? AND sender_id = ?', [req.params.id, req.user.id]);
+    res.json({ success: true });
 });
 
 // Port configuration for Render/Local
