@@ -23,12 +23,14 @@ function auth(req, res, next) {
     });
 }
 
-// ======== AUTH ========
 app.post('/api/auth/login', async (req, res) => {
     try {
         const pool = getPool();
         const { name, password, role } = req.body;
         
+        // Safety net: force ensure the email column exists if the server wasn't properly restarted
+        try { await pool.query("ALTER TABLE users ADD COLUMN email VARCHAR(100)"); } catch(e){}
+
         const [users] = await pool.query('SELECT * FROM users WHERE (email = ? OR name = ?) AND role = ?', [name, name, role]);
         const user = users[0];
 
@@ -48,6 +50,9 @@ app.post('/api/auth/register', async (req, res) => {
         const userRole = role || 'Resident';
 
         if (!name || !email || !password) return res.status(400).json({ error: "Name, Email, and Password are required" });
+
+        // Safety net: force ensure the email column exists if the server wasn't properly restarted
+        try { await pool.query("ALTER TABLE users ADD COLUMN email VARCHAR(100)"); } catch(e){}
 
         // Prevent dupes
         const [existing] = await pool.query('SELECT * FROM users WHERE email = ?', [email]);

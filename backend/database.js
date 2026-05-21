@@ -35,8 +35,13 @@ async function initDB() {
         )`);
         
         try {
-            await pool.query("ALTER TABLE users ADD COLUMN email VARCHAR(100) UNIQUE");
-        } catch(e) { /* Column likely exists */ }
+            await pool.query("ALTER TABLE users ADD COLUMN email VARCHAR(100)");
+            console.log("Successfully added email column to users table.");
+        } catch(e) {
+            if(e.code !== 'ER_DUP_FIELDNAME') {
+                console.log("Database Alter Error: ", e.message);
+            }
+        }
         await pool.query(`CREATE TABLE IF NOT EXISTS notices (id INT AUTO_INCREMENT PRIMARY KEY, title TEXT, content TEXT, date DATETIME)`);
         await pool.query(`CREATE TABLE IF NOT EXISTS visitors (id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(100), flat VARCHAR(50), purpose TEXT, phone VARCHAR(50), status VARCHAR(50), entry_time DATETIME, exit_time DATETIME)`);
         await pool.query(`CREATE TABLE IF NOT EXISTS staff (id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(100), role VARCHAR(50), shift VARCHAR(50), salary INT, attendance VARCHAR(50))`);
