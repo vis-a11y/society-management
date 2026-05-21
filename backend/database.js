@@ -28,10 +28,15 @@ async function initDB() {
             id INT AUTO_INCREMENT PRIMARY KEY,
             role VARCHAR(50) NOT NULL,
             name VARCHAR(100) NOT NULL,
+            email VARCHAR(100),
             flat VARCHAR(50), phone VARCHAR(50), 
             password VARCHAR(255) NOT NULL,
             parking_slot VARCHAR(100), vehicle_details VARCHAR(255)
         )`);
+        
+        try {
+            await pool.query("ALTER TABLE users ADD COLUMN email VARCHAR(100) UNIQUE");
+        } catch(e) { /* Column likely exists */ }
         await pool.query(`CREATE TABLE IF NOT EXISTS notices (id INT AUTO_INCREMENT PRIMARY KEY, title TEXT, content TEXT, date DATETIME)`);
         await pool.query(`CREATE TABLE IF NOT EXISTS visitors (id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(100), flat VARCHAR(50), purpose TEXT, phone VARCHAR(50), status VARCHAR(50), entry_time DATETIME, exit_time DATETIME)`);
         await pool.query(`CREATE TABLE IF NOT EXISTS staff (id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(100), role VARCHAR(50), shift VARCHAR(50), salary INT, attendance VARCHAR(50))`);
@@ -44,8 +49,8 @@ async function initDB() {
         // Check and Seed Default Admin logic (If users table is empty)
         const [rows] = await pool.query("SELECT * FROM users WHERE role = 'Admin'");
         if (rows.length === 0) {
-            await pool.query(`INSERT INTO users (role, name, flat, phone, password) VALUES ('Admin', 'admin@gmail.com', 'N/A', 'N/A', 'admin@123')`);
-            console.log("Default Admin created -> username: admin@gmail.com | pwd: admin@123");
+            await pool.query(`INSERT INTO users (role, name, email, flat, phone, password) VALUES ('Admin', 'Admin', 'admin@gmail.com', 'N/A', 'N/A', 'admin@123')`);
+            console.log("Default Admin created -> email: admin@gmail.com | pwd: admin@123");
         }
     } catch (err) {
         console.error("Failed to connect to MySQL backend:", err.message);

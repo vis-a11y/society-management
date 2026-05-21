@@ -29,10 +29,10 @@ app.post('/api/auth/login', async (req, res) => {
         const pool = getPool();
         const { name, password, role } = req.body;
         
-        const [users] = await pool.query('SELECT * FROM users WHERE name = ? AND role = ?', [name, role]);
+        const [users] = await pool.query('SELECT * FROM users WHERE (email = ? OR name = ?) AND role = ?', [name, name, role]);
         const user = users[0];
 
-        if (!user) return res.status(400).json({ error: 'User not found. Please register first.' });
+        if (!user) return res.status(400).json({ error: 'User not found. Please register or check credentials.' });
         
         if (password !== user.password) return res.status(400).json({ error: 'Invalid password.' });
 
@@ -45,16 +45,17 @@ app.post('/api/auth/register', async (req, res) => {
     try {
         const pool = getPool();
         const { name, email, password, role, flat, phone } = req.body;
-        const identifier = email || name;
         const userRole = role || 'Resident';
 
+        if (!name || !email || !password) return res.status(400).json({ error: "Name, Email, and Password are required" });
+
         // Prevent dupes
-        const [existing] = await pool.query('SELECT * FROM users WHERE name = ?', [identifier]);
+        const [existing] = await pool.query('SELECT * FROM users WHERE email = ?', [email]);
         if (existing.length > 0) return res.status(400).json({ error: "Email already in use" });
 
         const [result] = await pool.query(
-            `INSERT INTO users (role, name, flat, phone, password) VALUES (?, ?, ?, ?, ?)`,
-            [userRole, identifier, flat || '101', phone || 'N/A', password]
+            `INSERT INTO users (role, name, email, flat, phone, password) VALUES (?, ?, ?, ?, ?, ?)`,
+            [userRole, name, email, flat || 'N/A', phone || 'N/A', password]
         );
         res.json({ success: true, id: result.insertId });
     } catch (e) { res.status(500).json({ error: e.message }); }
@@ -229,11 +230,21 @@ app.delete('/api/documents/:id', auth, async (req, res) => {
 
 // ======== MESSAGES ========
 app.get('/api/messages', auth, async (req, res) => {
-    const [msgs] = await getPool().query('SELECT * FROM messages WHERE sender_id = ? OR receiver_id = ? ORDER BY timestamp DESC', [req.user.id, req.user.id]);
+    const isAdmin = req.user.role === 'Admin';
+    const query = isAdmin
+        ? 'SELECT m.*, u.name as sender_name, u.flat as sender_flat FROM messages m LEFT JOIN users u ON m.sender_id = u.id ORDER BY m.timestamp DESC'
+        : 'SELECT m.*, u.name as sender_name, u.flat as sender_flat FROM messages m LEFT JOIN users u ON m.sender_id = u.id WHERE m.sender_id = ? OR m.receiver_id = ? ORDER BY m.timestamp DESC';
+    const params = isAdmin ? [] : [req.user.id, req.user.id];
+    const [msgs] = await getPool().query(query, params);
     res.json(msgs);
 });
 app.post('/api/messages', auth, async (req, res) => {
-    const [q] = await getPool().query('INSERT INTO messages (sender_id, receiver_id, message, timestamp) VALUES (?, ?, ?, NOW())', [req.user.id, req.body.receiver_id, req.body.message]);
+    let receiverId = req.body.receiver_id;
+    if (!receiverId || receiverId == '1') {
+        const [admins] = await getPool().query("SELECT id FROM users WHERE role = 'Admin' LIMIT 1");
+        receiverId = admins.length ? admins[0].id : null;
+    }
+    const [q] = await getPool().query('INSERT INTO messages (sender_id, receiver_id, message, timestamp) VALUES (?, ?, ?, NOW())', [req.user.id, receiverId, req.body.message]);
     res.json({ success: true, id: q.insertId });
 });
 app.delete('/api/messages/:id', auth, async (req, res) => {
