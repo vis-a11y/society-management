@@ -107,7 +107,8 @@
                 body: JSON.stringify(data)
             });
             if (res.ok) {
-                alert('Account Created! You can now log in.');
+                const result = await res.json();
+                alert(`Account Created successfully! Your official Resident ID is: ${result.id}\n\nPlease save this ID as Admins may ask for it.`);
                 toggleAuth('login');
                 // Pre-fill the email they just created for easy access
                 document.querySelector('#loginForm input[name="name"]').value = data.email;

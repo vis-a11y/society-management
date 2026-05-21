@@ -25,7 +25,22 @@
     </aside><main class="main-content">
         <div class="page-header"><div><h1>My Resident Portal</h1></div></div>
         
-<div class="card"><div class="card-content"><h2>Welcome back!</h2><p class="muted mt-2">View sidebar to navigate the fully isolated multi-page modules.</p></div></div>
+        <div class="stats-grid">
+            <div class="stat-card">
+                <span class="stat-title"><i class="fas fa-bullhorn"></i> Important Notices</span>
+                <div class="stat-value" id="res-val-notices">0</div>
+            </div>
+            <div class="stat-card">
+                <span class="stat-title"><i class="fas fa-wallet"></i> Pending Dues</span>
+                <div class="stat-value text-danger" id="res-val-dues">₹0</div>
+            </div>
+            <div class="stat-card">
+                <span class="stat-title"><i class="fas fa-id-card"></i> Visitors Today</span>
+                <div class="stat-value" id="res-val-vis">0</div>
+            </div>
+        </div>
+
+        <div class="card"><div class="card-content"><h2>Welcome back!</h2><p class="muted mt-2">Use the sidebar to navigate your modules. Ensure your contact and vehicle details are up to date in the <a href="resident-profile.html" style="color:var(--primary)">My Profile</a> tab.</p></div></div>
 
     </main></div>
 <script src="app.js"></script>

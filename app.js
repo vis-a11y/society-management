@@ -104,6 +104,20 @@ document.addEventListener('DOMContentLoaded', async () => {
         } catch (e) {}
     }
 
+    if (loc.includes('resident-dashboard')) {
+        try {
+            const notices = await fetch(`${API_BASE}/notices`, {headers:authHeaders()});
+            const maint = await fetch(`${API_BASE}/maintenance`, {headers:authHeaders()});
+            const vis = await fetch(`${API_BASE}/visitors`, {headers:authHeaders()});
+            const jNotices = await notices.json(), jMaint = await maint.json(), jVis = await vis.json();
+            
+            document.getElementById('res-val-notices').textContent = jNotices.length || 0;
+            const pendingDues = (jMaint || []).filter(m => m.status === 'Pending').reduce((sum, m) => sum + m.amount, 0);
+            document.getElementById('res-val-dues').textContent = '₹' + pendingDues;
+            document.getElementById('res-val-vis').textContent = jVis.length || 0;
+        } catch (e) {}
+    }
+
     if (loc.includes('admin-notices') || loc.includes('resident-notices')) {
         loadTable('notices', 'dataTable', n => `
         <div class="activity-item" style="flex-direction: column; align-items: flex-start;">
@@ -211,6 +225,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             const res = await fetch(`${API_BASE}/users/profile`, { headers: authHeaders() });
             if (res.ok) {
                 const profile = await res.json();
+                document.getElementById('profile-id').innerText = profile.id;
                 document.getElementById('profile-name').innerText = profile.name;
                 document.getElementById('profile-flat').innerText = profile.flat || '101';
                 document.getElementById('phone-input').value = profile.phone === 'N/A' ? '' : profile.phone;
