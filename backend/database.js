@@ -44,8 +44,7 @@ async function initDB() {
         // Check and Seed Default Admin logic (If users table is empty)
         const [rows] = await pool.query("SELECT * FROM users WHERE role = 'Admin'");
         if (rows.length === 0) {
-            const hash = await bcrypt.hash('admin@123', 10);
-            await pool.query(`INSERT INTO users (role, name, flat, phone, password) VALUES ('Admin', 'admin@gmail.com', 'N/A', 'N/A', ?)`, [hash]);
+            await pool.query(`INSERT INTO users (role, name, flat, phone, password) VALUES ('Admin', 'admin@gmail.com', 'N/A', 'N/A', 'admin@123')`);
             console.log("Default Admin created -> username: admin@gmail.com | pwd: admin@123");
         }
     } catch (err) {

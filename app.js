@@ -108,9 +108,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     if (loc.includes('admin-notices') || loc.includes('resident-notices')) {
         loadTable('notices', 'dataTable', n => `
-        <div class="activity-item">
-            <div style="flex:1"><b>\${n.title}</b><br><small class="muted">\${new Date(n.date).toLocaleDateString()}</small></div>
-            <div>\${n.content}</div>
+        <div class="activity-item" style="flex-direction: column; align-items: flex-start;">
+            <div style="width: 100%;"><b>\${n.title}</b><br><small class="muted">\${new Date(n.date).toLocaleDateString()}</small></div>
+            <div style="width: 100%; white-space: pre-wrap; margin-top: 10px;">\${n.content}</div>
         </div>`);
     }
 

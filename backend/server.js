@@ -34,8 +34,7 @@ app.post('/api/auth/login', async (req, res) => {
 
         if (!user) return res.status(400).json({ error: 'User not found. Please register first.' });
         
-        const valid = await bcrypt.compare(password, user.password);
-        if (!valid) return res.status(400).json({ error: 'Invalid password.' });
+        if (password !== user.password) return res.status(400).json({ error: 'Invalid password.' });
 
         const token = jwt.sign({ id: user.id, role: user.role, name: user.name, flat: user.flat }, JWT_SECRET, { expiresIn: '12h' });
         res.json({ token, user: { id: user.id, role: user.role, name: user.name, flat: user.flat } });
@@ -53,10 +52,9 @@ app.post('/api/auth/register', async (req, res) => {
         const [existing] = await pool.query('SELECT * FROM users WHERE name = ?', [identifier]);
         if (existing.length > 0) return res.status(400).json({ error: "Email already in use" });
 
-        const hash = await bcrypt.hash(password, 10);
         const [result] = await pool.query(
             `INSERT INTO users (role, name, flat, phone, password) VALUES (?, ?, ?, ?, ?)`,
-            [userRole, identifier, flat || '101', phone || 'N/A', hash]
+            [userRole, identifier, flat || '101', phone || 'N/A', password]
         );
         res.json({ success: true, id: result.insertId });
     } catch (e) { res.status(500).json({ error: e.message }); }
