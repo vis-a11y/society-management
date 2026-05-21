@@ -213,10 +213,27 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     if (loc.includes('admin-residents')) {
         loadTable('users/residents', 'dataTable', r => `
-        <div class="activity-item">
-            <div class="logo-icon" style="width: 40px; height: 40px; border-radius: 50%; font-size: 1rem;"><i class="fas fa-user"></i></div>
-            <div style="flex:1"><b>${r.name}</b><br><small class="muted">Flat ${r.flat || 'N/A'} | Phone: ${r.phone || 'N/A'}</small></div>
-            ${role === 'Admin' ? `<div><button class="btn btn-danger btn-sm" style="padding: 0.4rem 0.8rem; font-size: 0.8rem; margin-left: 0.5rem;" onclick="apiAction('users/residents/${r.id}', 'DELETE')"><i class="fas fa-trash"></i></button></div>` : ''}
+        <div class="activity-item" style="flex-direction: column; align-items: flex-start; gap: 0.5rem; padding: 1.5rem;">
+            <div style="width: 100%; display: flex; justify-content: space-between; align-items: flex-start;">
+                <div style="display: flex; gap: 1.5rem; align-items: center;">
+                    <div class="logo-icon" style="width: 50px; height: 50px; border-radius: 50%; font-size: 1.25rem;"><i class="fas fa-user"></i></div>
+                    <div>
+                        <b>${r.name}</b> <span class="status-badge" style="background: rgba(99, 102, 241, 0.15); color: var(--primary-light); margin-left: 0.5rem; font-size: 0.8rem;">ID: ${r.id}</span><br>
+                        <small class="muted">Flat ${r.flat || 'N/A'}</small>
+                    </div>
+                </div>
+                ${role === 'Admin' ? `
+                <div style="display: flex; gap: 0.5rem;">
+                    <button class="btn btn-secondary btn-sm" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;" onclick="const newId = prompt('Enter new numerical Resident ID for ${r.name}:', '${r.id}'); if(newId && newId !== '${r.id}') apiAction('users/residents/${r.id}/change-id', 'PUT', {new_id: newId})"><i class="fas fa-edit"></i> Edit ID</button>
+                    <button class="btn btn-danger btn-sm" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;" onclick="apiAction('users/residents/${r.id}', 'DELETE')"><i class="fas fa-trash"></i></button>
+                </div>` : ''}
+            </div>
+            <div style="width: 100%; background: rgba(0,0,0,0.2); padding: 1rem 1.5rem; border-radius: 12px; margin-top: 0.75rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; font-size: 0.9rem; border: 1px solid var(--border-light);">
+                <div><span class="muted">Email Address:</span> <br><b>${r.email || 'N/A'}</b></div>
+                <div><span class="muted">Phone Number:</span> <br><b>${r.phone || 'N/A'}</b></div>
+                <div><span class="muted">Parking Slot:</span> <br><span class="status-badge" style="background:rgba(16,185,129,0.15);color:var(--success);border-color:rgba(16,185,129,0.3); padding: 0.2rem 0.6rem; margin-top: 0.2rem;">${r.parking_slot || 'Unassigned'}</span></div>
+                <div><span class="muted">Vehicle Details:</span> <br><b>${r.vehicle_details || 'N/A'}</b></div>
+            </div>
         </div>`);
     }
 

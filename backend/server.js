@@ -68,7 +68,7 @@ app.post('/api/auth/register', async (req, res) => {
 
 // ======== USERS ========
 app.get('/api/users/profile', auth, async (req, res) => {
-    const [u] = await getPool().query('SELECT id, name, flat, phone, role, vehicle_details FROM users WHERE id = ?', [req.user.id]);
+    const [u] = await getPool().query('SELECT id, name, flat, phone, role, vehicle_details, parking_slot FROM users WHERE id = ?', [req.user.id]);
     res.json(u[0]);
 });
 app.put('/api/users/profile', auth, async (req, res) => {
@@ -77,12 +77,33 @@ app.put('/api/users/profile', auth, async (req, res) => {
     res.json({ success: true });
 });
 app.get('/api/users/residents', auth, async (req, res) => {
-    const [users] = await getPool().query('SELECT id, name, flat, phone FROM users WHERE role = "Resident"');
+    const [users] = await getPool().query('SELECT id, name, email, flat, phone, parking_slot, vehicle_details FROM users WHERE role = "Resident" ORDER BY id ASC');
     res.json(users);
 });
 app.delete('/api/users/residents/:id', auth, async (req, res) => {
     if (req.user.role !== 'Admin') return res.status(403).json({ error: 'Admin only' });
     await getPool().query('DELETE FROM users WHERE id = ? AND role = "Resident"', [req.params.id]);
+    res.json({ success: true });
+});
+app.put('/api/users/residents/:id/change-id', auth, async (req, res) => {
+    if (req.user.role !== 'Admin') return res.status(403).json({ error: 'Admin only' });
+    const oldId = req.params.id;
+    const newId = req.body.new_id;
+    if (!newId) return res.status(400).json({ error: 'New ID is required' });
+    
+    const pool = getPool();
+    const [exists] = await pool.query('SELECT id FROM users WHERE id = ?', [newId]);
+    if (exists.length > 0) return res.status(400).json({ error: 'That ID is already taken by another user' });
+
+    // Manual cascade of foreign keys
+    await pool.query('UPDATE maintenance SET resident_id = ? WHERE resident_id = ?', [newId, oldId]);
+    await pool.query('UPDATE complaints SET resident_id = ? WHERE resident_id = ?', [newId, oldId]);
+    await pool.query('UPDATE documents SET uploaded_by = ? WHERE uploaded_by = ?', [newId, oldId]);
+    await pool.query('UPDATE messages SET sender_id = ? WHERE sender_id = ?', [newId, oldId]);
+    await pool.query('UPDATE messages SET receiver_id = ? WHERE receiver_id = ?', [newId, oldId]);
+    // Finally update user
+    await pool.query('UPDATE users SET id = ? WHERE id = ?', [newId, oldId]);
+    
     res.json({ success: true });
 });
 
